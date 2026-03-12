@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSP Sales Intelligence Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#0a1628;--navy-mid:#112240;--steel:#2a4a6b;
+    --accent:#e85d26;--accent-light:#f07843;--gold:#c9a84c;
+    --ice:#a8c8e8;--white:#f0f4f8;--muted:#6b8aaa;--success:#2ecc71;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(232,93,38,.06) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 90%,rgba(168,200,232,.05) 0%,transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.015) 39px,rgba(255,255,255,.015) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.015) 39px,rgba(255,255,255,.015) 40px);}
+  .wrapper{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:36px 24px 80px;}
+
+  /* ── PRINT ── */
+  @media print {
+    @page{margin:1.2cm 1.5cm;}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:#fff!important;color:#111!important;font-size:12px;}
+    body::before{display:none;}
+    .wrapper{padding:0;max-width:100%;}
+    .no-print{display:none!important;}
+    .results{display:block!important;}
+    .section-body.collapsed{display:block!important;}
+    .section-toggle{display:none;}
+    .meeting-header{background:#f8f8f8!important;border:2px solid #e85d26!important;padding:14px 18px!important;}
+    .meeting-header::before{background:#e85d26!important;}
+    .meeting-contact h2{color:#111!important;}
+    .meeting-contact .title-line{color:#e85d26!important;}
+    .meeting-contact .company-line{color:#333!important;}
+    .badge-opco{background:#ffe8e0!important;color:#c03000!important;border-color:#e85d26!important;}
+    .badge-geo{background:#e8f0f8!important;color:#1a4a7a!important;border-color:#1a4a7a!important;}
+    .badge-date{background:#fef8e8!important;color:#7a5a00!important;border-color:#c9a84c!important;}
+    .section{background:#fff!important;border:1px solid #ccc!important;page-break-inside:avoid;margin-bottom:8px;}
+    .section-header{background:#f3f3f3!important;border-bottom:1px solid #ddd!important;}
+    .section-title{color:#111!important;}
+    .section-body{color:#111!important;}
+    .section-body p,.section-body span,.section-body div{color:#111!important;}
+    .section-subhead{color:#444!important;}
+    .person-card{background:#eef4fb!important;border:1px solid #aac8e8!important;}
+    .person-info h3,.person-info .person-title{color:#111!important;}
+    .person-info .person-title{color:#c03000!important;}
+    .person-info p{color:#333!important;}
+    .person-avatar{background:#2a4a6b!important;color:#fff!important;}
+    .intel-item{color:#111!important;background:#fdfaf0!important;border-left-color:#c9a84c!important;}
+    .intel-item.blue{background:#eef4fb!important;border-left-color:#2a70c0!important;}
+    .intel-item.red{background:#fdf0ec!important;border-left-color:#c03000!important;}
+    .intel-item.green{background:#edfbf3!important;border-left-color:#1a7a45!important;}
+    .insight-item{background:#fdf8f0!important;border-left-color:#e85d26!important;}
+    .insight-item .text,.insight-item .text strong,.insight-item .text span{color:#111!important;}
+    .building-stat{background:#f5f5f5!important;border:1px solid #ddd!important;}
+    .stat-label{color:#555!important;}.stat-value{color:#1a4a7a!important;}.stat-sub{color:#555!important;}
+    .competitor-item{background:#f9f9f9!important;border:1px solid #ddd!important;}
+    .competitor-name{color:#111!important;}.competitor-detail{color:#444!important;}
+    .tag-hvac{background:#ffe8e0!important;color:#c03000!important;}
+    .tag-controls{background:#e8f0f8!important;color:#1a4a7a!important;}
+    .tag-energy{background:#edfbf3!important;color:#1a7a45!important;}
+    .roi-card{background:#f5f5f5!important;border:1px solid #ddd!important;}
+    .roi-label{color:#555!important;}.roi-value{color:#7a5a00!important;}.roi-sub{color:#555!important;}
+    .strategy-callout{background:#fdfaf0!important;border-left-color:#c9a84c!important;}
+    .strategy-label{color:#7a5a00!important;}.strategy-text{color:#111!important;}
+    .talking-point{background:#edfbf3!important;border-left-color:#1a7a45!important;color:#111!important;}
+    .question-item{background:#f9f9f9!important;}
+    .q-text{color:#111!important;}.q-num{color:#c03000!important;}.q-category{color:#444!important;}.q-rationale{color:#555!important;}
+    .objection-q{background:#fdf0ec!important;border-left-color:#c03000!important;color:#111!important;}
+    .objection-a{background:#edfbf3!important;border-left-color:#1a7a45!important;color:#111!important;}
+    .walkaway-item{background:#eef4fb!important;border:1px solid #aac8e8!important;}
+    .wa-label{color:#1a4a7a!important;}.wa-text{color:#111!important;}
+    .experience-item{background:#f5f5f5!important;border:1px solid #ddd!important;color:#111!important;}
+  }
+
+  /* ── SCREEN ── */
+  .header{display:flex;align-items:flex-end;gap:20px;margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid rgba(168,200,232,.15);}
+  .logo-mark{width:48px;height:48px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;color:#fff;flex-shrink:0;}
+  .header-text h1{font-family:'Bebas Neue';font-size:28px;letter-spacing:3px;line-height:1;}
+  .header-text p{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;font-weight:500;}
+  .opco-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .opco-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:500;flex-basis:100%;margin-bottom:6px;}
+  .opco-btn{background:var(--navy-mid);border:1px solid rgba(168,200,232,.15);color:var(--muted);padding:7px 14px;font-family:'DM Sans';font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+  .opco-btn:hover{border-color:var(--accent);color:var(--white);}
+  .opco-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .form-card{background:var(--navy-mid);border:1px solid rgba(168,200,232,.12);padding:22px 28px;margin-bottom:14px;position:relative;}
+  .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .form-group{display:flex;flex-direction:column;gap:7px;}
+  .form-group.full{grid-column:1/-1;}
+  label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  input,select,textarea{background:var(--navy);border:1px solid rgba(168,200,232,.2);color:var(--white);padding:10px 13px;font-family:'DM Sans';font-size:14px;outline:none;transition:border-color .2s;width:100%;}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  input::placeholder,textarea::placeholder{color:rgba(107,138,170,.5);}
+  textarea{resize:vertical;min-height:68px;}
+  .generate-btn{width:100%;padding:15px;background:var(--accent);border:none;color:#fff;font-family:'Bebas Neue';font-size:20px;letter-spacing:3px;cursor:pointer;transition:all .2s;margin-top:18px;}
+  .generate-btn:hover{background:var(--accent-light);}
+  .generate-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .loading-state{display:none;text-align:center;padding:56px 20px;}
+  .loading-state.visible{display:block;}
+  .loading-icon{width:48px;height:48px;border:3px solid rgba(232,93,38,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 18px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-state p{color:var(--muted);font-size:13px;letter-spacing:1px;}
+  .loading-step{font-family:'DM Mono';font-size:11px;color:var(--accent);margin-top:8px;min-height:18px;}
+  .results{display:none;animation:fadeUp .4s ease;}
+  .results.visible{display:block;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .meeting-header{background:var(--navy-mid);border:1px solid rgba(168,200,232,.12);padding:26px 30px;margin-bottom:4px;position:relative;overflow:hidden;}
+  .meeting-header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--ice));}
+  .meeting-meta{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+  .meeting-contact h2{font-family:'Bebas Neue';font-size:32px;letter-spacing:2px;line-height:1;}
+  .meeting-contact .title-line{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:1px;margin-top:4px;}
+  .meeting-contact .company-line{font-size:14px;color:var(--ice);margin-top:2px;}
+  .meeting-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:11px;letter-spacing:1px;font-weight:600;text-transform:uppercase;}
+  .badge-opco{background:rgba(232,93,38,.15);color:var(--accent);border:1px solid rgba(232,93,38,.3);}
+  .badge-geo{background:rgba(168,200,232,.1);color:var(--ice);border:1px solid rgba(168,200,232,.2);}
+  .badge-date{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2);}
+  .toc{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 18px;}
+  .toc-item{padding:4px 11px;background:var(--navy-mid);border:1px solid rgba(168,200,232,.12);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .toc-item:hover{color:var(--white);border-color:var(--accent);}
+  .section{background:var(--navy-mid);border:1px solid rgba(168,200,232,.12);margin-bottom:10px;overflow:hidden;}
+  .section-header{display:flex;align-items:center;gap:12px;padding:13px 22px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(168,200,232,.08);cursor:pointer;user-select:none;}
+  .section-header:hover{background:rgba(255,255,255,.05);}
+  .section-icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .section-title{font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;flex:1;}
+  .section-toggle{color:var(--muted);font-size:12px;transition:transform .2s;}
+  .section-toggle.open{transform:rotate(180deg);}
+  .section-body{padding:18px 22px;line-height:1.7;color:rgba(240,244,248,.85);font-size:14px;}
+  .section-body.collapsed{display:none;}
+  .section-body p{margin-bottom:10px;}
+  .section-body p:last-child{margin-bottom:0;}
+  .section-subhead{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:9px;margin-top:14px;}
+  .section-subhead:first-child{margin-top:0;}
+  .person-card{display:flex;gap:14px;padding:14px;background:rgba(168,200,232,.06);border:1px solid rgba(168,200,232,.15);margin-bottom:12px;}
+  .person-avatar{width:50px;height:50px;background:var(--steel);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:21px;color:var(--ice);flex-shrink:0;}
+  .person-info h3{font-size:16px;font-weight:600;margin-bottom:2px;}
+  .person-info .person-title{font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.5px;margin-bottom:5px;}
+  .person-info p{font-size:13px;color:rgba(240,244,248,.75);line-height:1.6;}
+  .insight-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .insight-item{display:flex;gap:12px;padding:11px 14px;background:rgba(255,255,255,.03);border-left:3px solid var(--accent);}
+  .insight-item .bullet{color:var(--accent);font-weight:700;flex-shrink:0;font-family:'DM Mono';font-size:12px;margin-top:2px;}
+  .insight-item .text{font-size:14px;line-height:1.6;color:rgba(240,244,248,.85);}
+  .insight-item .text strong{color:var(--white);display:block;margin-bottom:2px;}
+  .intel-item{padding:11px 14px;background:rgba(201,168,76,.07);border-left:3px solid var(--gold);margin-bottom:8px;font-size:14px;line-height:1.6;color:rgba(240,244,248,.85);display:flex;gap:10px;align-items:flex-start;}
+  .intel-item.blue{background:rgba(168,200,232,.07);border-left-color:var(--ice);}
+  .intel-item.red{background:rgba(232,93,38,.07);border-left-color:var(--accent);}
+  .intel-item.green{background:rgba(46,204,113,.07);border-left-color:var(--success);}
+  .intel-icon{flex-shrink:0;}
+  .building-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .building-stat{background:rgba(255,255,255,.04);border:1px solid rgba(168,200,232,.1);padding:13px;text-align:center;}
+  .stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .stat-value{font-family:'Bebas Neue';font-size:20px;letter-spacing:1px;color:var(--ice);line-height:1;}
+  .stat-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+  .competitor-item{padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(168,200,232,.1);margin-bottom:8px;}
+  .competitor-name{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .competitor-detail{font-size:13px;color:var(--muted);line-height:1.5;}
+  .competitor-tag{display:inline-block;padding:2px 7px;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-right:5px;margin-top:4px;}
+  .tag-hvac{background:rgba(232,93,38,.15);color:var(--accent);}
+  .tag-controls{background:rgba(168,200,232,.1);color:var(--ice);}
+  .tag-energy{background:rgba(46,204,113,.1);color:var(--success);}
+  .questions-grid{display:flex;flex-direction:column;gap:5px;}
+  .question-item{padding:12px 14px;background:rgba(255,255,255,.03);border-left:3px solid transparent;transition:all .2s;display:flex;align-items:flex-start;gap:12px;}
+  .question-item:hover{background:rgba(232,93,38,.07);border-left-color:var(--accent);}
+  .q-num{font-family:'DM Mono';font-size:11px;color:var(--accent);font-weight:500;flex-shrink:0;width:24px;margin-top:2px;}
+  .q-text{font-size:14px;line-height:1.6;margin-bottom:3px;}
+  .q-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+  .q-category{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .q-rationale{font-size:12px;color:rgba(107,138,170,.8);font-style:italic;}
+  .roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .roi-card{background:rgba(255,255,255,.04);border:1px solid rgba(168,200,232,.1);padding:14px;text-align:center;}
+  .roi-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .roi-value{font-family:'Bebas Neue';font-size:26px;letter-spacing:1px;color:var(--gold);line-height:1;}
+  .roi-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+  .objection-item{border:1px solid rgba(168,200,232,.12);margin-bottom:10px;overflow:hidden;}
+  .objection-q{padding:11px 14px;background:rgba(232,93,38,.08);border-left:3px solid var(--accent);font-size:14px;font-weight:600;}
+  .objection-a{padding:11px 14px;background:rgba(46,204,113,.05);border-left:3px solid var(--success);font-size:14px;color:rgba(240,244,248,.85);line-height:1.65;}
+  .strategy-callout{padding:13px 15px;background:rgba(201,168,76,.08);border-left:4px solid var(--gold);margin-bottom:10px;}
+  .strategy-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px;}
+  .strategy-text{font-size:14px;line-height:1.65;color:rgba(240,244,248,.85);}
+  .talking-point{padding:12px 14px;background:rgba(46,204,113,.06);border-left:3px solid var(--success);margin-bottom:7px;font-size:14px;line-height:1.6;color:rgba(240,244,248,.85);}
+  .walkaway-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .walkaway-item{padding:13px 14px;background:rgba(168,200,232,.06);border:1px solid rgba(168,200,232,.2);}
+  .wa-icon{font-size:17px;margin-bottom:5px;}
+  .wa-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--ice);font-weight:700;margin-bottom:4px;}
+  .wa-text{font-size:13px;line-height:1.6;color:rgba(240,244,248,.8);}
+  .experience-item{padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(168,200,232,.1);margin-bottom:7px;font-size:14px;line-height:1.6;}
+  .action-bar{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;}
+  .action-btn{padding:10px 18px;background:var(--navy-mid);border:1px solid rgba(168,200,232,.2);color:var(--ice);font-family:'DM Sans';font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+  .action-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .action-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .error-msg{background:rgba(232,93,38,.1);border:1px solid rgba(232,93,38,.3);padding:13px 16px;color:var(--accent-light);font-size:13px;display:none;margin-top:10px;}
+  .error-msg.visible{display:block;}
+  .upload-zone{border:2px dashed rgba(168,200,232,.25);padding:14px 18px;cursor:pointer;transition:all .2s;text-align:center;background:rgba(168,200,232,.03);}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(232,93,38,.05);}
+  .upload-zone.loaded{border-color:var(--success);background:rgba(46,204,113,.05);}
+  .upload-label{font-size:12px;color:var(--muted);}
+  .upload-status{font-size:12px;color:var(--success);font-weight:600;margin-top:4px;}
+
+  /* Prompt Editor */
+  .prompt-editor-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 0;margin-bottom:8px;}
+  .prompt-editor-toggle span{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+  .prompt-editor-toggle:hover span{color:var(--ice);}
+  .prompt-editor{display:none;background:var(--navy-mid);border:1px solid rgba(201,168,76,.3);padding:20px;margin-bottom:14px;position:relative;}
+  .prompt-editor::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);}
+  .prompt-editor.open{display:block;}
+  .prompt-editor textarea{font-family:'DM Mono';font-size:12px;line-height:1.6;min-height:220px;background:rgba(0,0,0,.3);border-color:rgba(201,168,76,.2);}
+  .prompt-editor textarea:focus{border-color:var(--gold);}
+  .prompt-editor-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;}
+
+  /* Call Type Selector */
+  .call-type-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0;}
+  .call-type-btn{background:var(--navy-mid);border:1px solid rgba(168,200,232,.15);color:var(--muted);padding:6px 14px;font-family:'DM Sans';font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+  .call-type-btn:hover{border-color:var(--gold);color:var(--white);}
+  .call-type-btn.active{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold);}
+
+  @media(max-width:600px){
+    .form-grid,.roi-grid,.building-grid,.walkaway-grid{grid-template-columns:1fr;}
+    .meeting-meta{flex-direction:column;}
+    .meeting-badges{align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header no-print">
+    <div class="logo-mark">FSP</div>
+    <div class="header-text">
+      <h1>Sales Intelligence Brief</h1>
+      <p>Flow Service Partners — Pre-Call Preparation System</p>
+    </div>
+  </div>
+
+  <!-- OpCo Selector -->
+  <div class="opco-bar no-print">
+    <span class="opco-label">Your Operating Company</span>
+    <button class="opco-btn active"
+      data-opco="Perfection" data-state="IN"
+      data-services="commercial HVAC service, preventive maintenance, equipment replacement, controls integration, energy solutions"
+      data-markets="manufacturing, healthcare, K-12 schools, higher education, commercial office, retail, government"
+      data-region="central Indiana (Indianapolis metro)"
+      data-differentiators="deep central Indiana market relationships, multi-trade capability, strong K-12 and healthcare reference list, Daikin Premier partner">Perfection (IN)</button>
+    <button class="opco-btn"
+      data-opco="Alstadt" data-state="IN"
+      data-services="commercial HVAC service and replacement, refrigeration, light industrial HVAC"
+      data-markets="light industrial, food service, retail, commercial office"
+      data-region="northern Indiana"
+      data-differentiators="refrigeration expertise, northern Indiana market depth, industrial HVAC experience">Alstadt (IN)</button>
+    <button class="opco-btn"
+      data-opco="Cortez" data-state="FL"
+      data-services="commercial HVAC service, preventive maintenance, equipment replacement, refrigeration, IAQ solutions"
+      data-markets="hospitality, healthcare, K-12 schools, multifamily, commercial, houses of worship"
+      data-region="southwest Florida — Bradenton, Sarasota, Manatee and Charlotte counties"
+      data-differentiators="deep SW Florida roots, humidity and coastal corrosion expertise, hospitality and school system experience, fast emergency response">Cortez (FL)</button>
+    <button class="opco-btn"
+      data-opco="R Brooks Mechanical" data-state="MD"
+      data-services="commercial HVAC, plumbing, mechanical service and construction, preventive maintenance"
+      data-markets="government, federal, healthcare, education, commercial office"
+      data-region="Maryland / DMV — Baltimore to DC corridor"
+      data-differentiators="government contracting experience, mechanical construction capability, DMV market relationships, plumbing + HVAC combined capability">R Brooks (MD)</button>
+    <button class="opco-btn"
+      data-opco="Dynamic Air Solutions" data-state="KY"
+      data-services="commercial HVAC service, building automation and controls, energy efficiency solutions, preventive maintenance"
+      data-markets="manufacturing, industrial facilities, commercial office, healthcare"
+      data-region="Kentucky"
+      data-differentiators="controls and automation expertise, manufacturing sector depth, energy audit capability, industrial HVAC experience">Dynamic Air (KY)</button>
+    <button class="opco-btn"
+      data-opco="Weber Refrigeration & Heating" data-state="KS"
+      data-services="commercial HVAC, refrigeration, heating, preventive maintenance — 45+ years serving Kansas"
+      data-markets="food service, retail, light commercial, agricultural facilities, houses of worship"
+      data-region="Kansas — Wichita area and surrounding region"
+      data-differentiators="45+ years of community trust, refrigeration expertise, agricultural and food service depth, local ownership and accountability">Weber (KS)</button>
+  </div>
+
+  <!-- Call Type -->
+  <div class="form-card no-print" style="padding:16px 22px;margin-bottom:12px;">
+    <label style="display:block;margin-bottom:10px;">Call Type / Primary Objective</label>
+    <div class="call-type-bar">
+      <button class="call-type-btn active" data-type="discovery" data-desc="First meeting — learn about their business, build rapport, uncover needs">🔍 Discovery Call</button>
+      <button class="call-type-btn" data-type="pm" data-desc="Preventive Maintenance — propose a service agreement, assess current maintenance program">🔧 PM / Service Contract</button>
+      <button class="call-type-btn" data-type="project" data-desc="Project Work — equipment replacement, system upgrade, controls, or capital project">🏗 Project / Capital Work</button>
+      <button class="call-type-btn" data-type="followup" data-desc="Follow-up — continuing relationship, proposal review, or moving a deal forward">🤝 Follow-Up / Proposal</button>
+    </div>
+  </div>
+
+  <!-- Customer Docs Upload (visible to salespeople) -->
+  <div class="form-card no-print" style="padding:16px 22px;margin-bottom:12px;">
+    <div>
+      <label style="display:block;margin-bottom:8px;">📎 Customer Files <span style="opacity:.5;font-size:10px;">(optional — prior proposals, quotes, emails, notes — PDF/TXT/CSV)</span></label>
+      <div class="upload-zone" id="docsZone" onclick="document.getElementById('docFiles').click()">
+        <div class="upload-label">Drop files here or click to browse<br><span style="font-size:10px;opacity:.7">Claude will read and incorporate into the brief</span></div>
+        <div class="upload-status" id="docsStatus"></div>
+      </div>
+      <input type="file" id="docFiles" accept=".pdf,.txt,.csv,.md" multiple style="display:none" onchange="handleDocFiles(event)"/>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <div class="form-card no-print">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Contact Name</label>
+        <input type="text" id="contactName" placeholder="e.g. Jennifer Walsh"/>
+      </div>
+      <div class="form-group">
+        <label>Job Title</label>
+        <input type="text" id="jobTitle" placeholder="e.g. Director of Facilities"/>
+      </div>
+      <div class="form-group full">
+        <label>Company / Organization Name</label>
+        <input type="text" id="companyName" placeholder="e.g. Bradenton Christian School"/>
+      </div>
+      <div class="form-group full">
+        <label>Address / City, State</label>
+        <input type="text" id="address" placeholder="e.g. 1234 26th St W, Bradenton, FL 34205"/>
+      </div>
+      <div class="form-group full">
+        <label>Additional Context <span style="opacity:.5;font-size:10px;">(optional — anything you already know)</span></label>
+        <textarea id="context" placeholder="e.g. Referred by John Smith. Building expansion underway. Had a compressor failure last summer. Currently with ABC Mechanical. Multiple buildings on campus..."></textarea>
+      </div>
+    </div>
+    <button class="generate-btn" id="generateBtn" onclick="generateBrief()">⚡ Generate Sales Intelligence Brief</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- Prompt Editor (Advanced) -->
+  <div class="no-print" style="margin-bottom:14px;">
+    <div class="prompt-editor-toggle" onclick="togglePromptEditor()">
+      <span id="promptToggleLabel">⚙️ Advanced — Edit AI Prompt</span>
+      <span style="font-size:10px;color:var(--muted)">(customize what the AI focuses on)</span>
+    </div>
+    <div class="prompt-editor" id="promptEditor">
+      <label style="display:block;margin-bottom:8px;color:var(--gold)">System Prompt — Defines the AI's expertise and behavior</label>
+      <textarea id="systemPromptEditor"></textarea>
+      <div class="prompt-editor-note">⚠️ This is the AI's "instruction set." Changes here affect every brief. Modify with care. Reset to default by refreshing the page.</div>
+      <div style="margin-top:12px;">
+        <label style="display:block;margin-bottom:8px;color:var(--gold)">User Prompt Template — The brief request sent to the AI</label>
+        <textarea id="userPromptEditor" style="min-height:300px;"></textarea>
+        <div class="prompt-editor-note">Use {name}, {title}, {company}, {address}, {context}, {opco}, {region}, {services}, {markets}, {differentiators}, {callType}, {callDesc}, {customerContext}, {docContext} as placeholders. These are filled in automatically when generating.</div>
+      </div>
+      <button onclick="resetPrompts()" style="margin-top:12px;padding:8px 16px;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);font-size:12px;cursor:pointer;font-family:'DM Sans';font-weight:600;">↺ Reset to Default</button>
+    </div>
+  </div>
+
+  <div class="loading-state no-print" id="loadingState">
+    <div class="loading-icon"></div>
+    <p>Building your intelligence brief...</p>
+    <div class="loading-step" id="loadingStep">Researching company profile...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+</div>
+<script>
+// ── STATE ──
+let selectedOpCo='Perfection',selectedState='IN';
+let selectedServices='commercial HVAC service, preventive maintenance, equipment replacement, controls integration';
+let selectedMarkets='manufacturing, healthcare, K-12 schools, commercial office, retail';
+let selectedRegion='central Indiana';
+let selectedDiff='deep central Indiana market relationships, Daikin Premier partner';
+let selectedCallType='discovery';
+let selectedCallDesc='First meeting — learn about their business, build rapport, uncover needs';
+let uploadedDocText='';
+
+// ═══════════════════════════════════════════════════════════════════
+// ADMIN-ONLY: CUSTOMER REFERENCE DATA
+// This section is invisible to salespeople. Edit this to improve
+// the credibility sections of every brief. Add real customer names
+// and verticals for each OpCo. Format: { company, vertical, opco }
+// The 'opco' field should match the OpCo button data-opco values
+// exactly, OR use 'ALL' to apply to every OpCo.
+// ═══════════════════════════════════════════════════════════════════
+const FSP_CUSTOMER_DATA = [
+  // ── PERFECTION (IN) ──
+  // { company: "Example Manufacturing Co", vertical: "Industrial / Manufacturing", opco: "Perfection" },
+  // { company: "St. Vincent Hospital North", vertical: "Healthcare", opco: "Perfection" },
+  // { company: "Carmel Clay Schools", vertical: "K-12 Education", opco: "Perfection" },
+
+  // ── ALSTADT (IN) ──
+  // { company: "Example Food Distribution", vertical: "Food Service / Industrial", opco: "Alstadt" },
+
+  // ── CORTEZ (FL) ──
+  // { company: "Sarasota Memorial Hospital", vertical: "Healthcare", opco: "Cortez" },
+  // { company: "Manatee County Schools", vertical: "K-12 Education", opco: "Cortez" },
+
+  // ── R BROOKS (MD) ──
+  // { company: "Maryland Department of Transportation", vertical: "Government", opco: "R Brooks Mechanical" },
+
+  // ── DYNAMIC AIR (KY) ──
+  // { company: "Toyota Manufacturing Kentucky", vertical: "Industrial / Manufacturing", opco: "Dynamic Air Solutions" },
+
+  // ── WEBER (KS) ──
+  // { company: "Dillons Grocery Wichita", vertical: "Retail / Food Service", opco: "Weber Refrigeration & Heating" },
+];
+// ═══════════════════════════════════════════════════════════════════
+
+// ── OPCO BUTTONS ──
+document.querySelectorAll('.opco-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.opco-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedOpCo=btn.dataset.opco; selectedState=btn.dataset.state;
+    selectedServices=btn.dataset.services; selectedMarkets=btn.dataset.markets;
+    selectedRegion=btn.dataset.region; selectedDiff=btn.dataset.differentiators;
+  });
+});
+
+// ── CALL TYPE BUTTONS ──
+document.querySelectorAll('.call-type-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.call-type-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCallType=btn.dataset.type; selectedCallDesc=btn.dataset.desc;
+  });
+});
+
+// ── DOCUMENT FILES UPLOAD ──
+const docsZone=document.getElementById('docsZone');
+docsZone.addEventListener('dragover',e=>{e.preventDefault();docsZone.classList.add('dragover');});
+docsZone.addEventListener('dragleave',()=>docsZone.classList.remove('dragover'));
+docsZone.addEventListener('drop',e=>{e.preventDefault();docsZone.classList.remove('dragover');handleDocFiles({target:{files:e.dataTransfer.files}});});
+
+async function handleDocFiles(event){
+  const files=Array.from(event.target.files); if(!files.length) return;
+  docsZone.classList.add('loaded');
+  document.getElementById('docsStatus').textContent=`Reading ${files.length} file(s)...`;
+  let allText='';
+  for(const file of files){
+    try{
+      if(file.type==='application/pdf'||file.name.endsWith('.pdf')){
+        // Read PDF as base64 — will be sent to Claude as document
+        const ab=await file.arrayBuffer();
+        const bytes=new Uint8Array(ab);
+        let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b));
+        const b64=btoa(bin);
+        allText+=`\n[PDF FILE: ${file.name}]\n[BASE64_PDF:${b64.substring(0,50000)}]\n`;
+      } else {
+        const text=await file.text();
+        allText+=`\n[FILE: ${file.name}]\n${text.substring(0,8000)}\n`;
+      }
+    } catch(e){ allText+=`\n[Could not read: ${file.name}]\n`; }
+  }
+  uploadedDocText=allText;
+  document.getElementById('docsStatus').textContent=`✓ ${files.length} file(s) loaded — will be incorporated into brief`;
+}
+
+function buildCustomerContext(){
+  const relevant = FSP_CUSTOMER_DATA.filter(c => c.opco === selectedOpCo || c.opco === 'ALL');
+  if(!relevant.length) return 'Customer reference list not yet populated for this OpCo — use general FSP experience claims.';
+  const byVertical = {};
+  relevant.forEach(c => {
+    const v = c.vertical || 'General Commercial';
+    if(!byVertical[v]) byVertical[v] = [];
+    byVertical[v].push(c.company);
+  });
+  let out = `${selectedOpCo} EXISTING CUSTOMER REFERENCES (${relevant.length} total):\n`;
+  Object.entries(byVertical).forEach(([v, cos]) => { out += `${v}: ${cos.join(', ')}\n`; });
+  return out;
+}
+
+// ── DEFAULT PROMPTS ──
+const DEFAULT_SYSTEM=`You are a world-class commercial HVAC sales intelligence analyst for Flow Service Partners (FSP). Your mission: produce comprehensive pre-call briefs that transform salespeople — even those with limited technical or sales experience — into confident, knowledgeable consultants before they walk in the door.
+
+Deep expertise in:
+- Commercial HVAC systems: chillers, RTUs, AHUs, VAVs, VRF, heat pumps, boilers, cooling towers, FCUs, split systems
+- Building automation (BAS/BMS/EMS), controls, IAQ, refrigerant regulations (R-22 phase-out, 410A, 454B transition)
+- Preventive maintenance programs, service contracts, emergency service, energy audits, ESCO financing
+- Commercial real estate, property records, building permits, construction eras and their HVAC implications
+- ROI frameworks, utility incentive programs, bond referendums, capital planning cycles
+- Sales methodologies: The Challenger Sale, SPIN Selling, Hope Is Not a Strategy, The New Strategic Selling (Miller-Heiman)
+- Vertical markets: K-12 and higher education, healthcare, hospitality, industrial/manufacturing, multifamily, retail, government, houses of worship
+- Regional HVAC markets and named competitors in FL, IN, MD, KY, KS
+
+Always respond ONLY with valid JSON — no markdown, no preamble, no text outside the JSON object.`;
+
+const DEFAULT_USER_TEMPLATE=`Generate a comprehensive pre-call sales intelligence brief for a salesperson from {opco} preparing for a {callType} call.
+
+OPERATING COMPANY: {opco}
+REGION: {region}
+CORE SERVICES: {services}
+SERVED MARKETS: {markets}
+KEY DIFFERENTIATORS: {differentiators}
+
+CALL TYPE: {callType} — {callDesc}
+
+PROSPECT:
+- Contact: {name} | {title}
+- Company: {company}
+- Address: {address}
+- Context: {context}
+
+{customerContext}
+
+{docContext}
+
+INSTRUCTIONS:
+1. Use real, specific knowledge about {company} wherever possible — not generic filler
+2. Tailor ALL recommendations to {opco}'s actual capabilities, region, and differentiators
+3. Adjust the entire brief for the call type: {callType} — {callDesc}
+4. If customer files are provided above, extract and reference specific details (equipment, issues, quotes, history) throughout the brief
+5. If customer reference list is provided, name similar customers to build credibility
+6. Coach the salesperson clearly — assume they may have limited HVAC technical knowledge and limited formal sales training
+7. Apply all four methodologies: Challenger Sale (teach-tailor-take control), SPIN Selling (situation-problem-implication-need payoff), Hope Is Not a Strategy (challenge vague assumptions), New Strategic Selling / Miller-Heiman (map all buying influences)
+8. For PM/service contract calls: emphasize maintenance ROI, equipment reliability, budgeting predictability
+9. For project calls: emphasize capital planning, equipment end-of-life, funding sources, decision process
+10. For discovery calls: emphasize open-ended questions, listening, and needs identification
+
+Respond ONLY with this JSON structure — fill every field with specific, actionable content:
+
+{
+  "callTypeSummary": "One paragraph coaching the salesperson on exactly what this {callType} call is about and what a great outcome looks like",
+  "contactProfile": {
+    "initials": "XX",
+    "name": "{name}",
+    "title": "{title}",
+    "background": "Detailed profile — likely background, tenure, what their day looks like, what they care about, what stresses them out",
+    "buyerRole": "Miller-Heiman role: Economic / User / Technical Buyer — what this means for how to engage them and what they need to hear",
+    "personalityNotes": "Communication style, decision-making approach, what they respond to, what to avoid, how to earn their trust",
+    "linkedinTips": "3 specific things to look for on LinkedIn before the meeting — be concrete about what each piece of info is useful for",
+    "connectionAngles": "3 specific rapport-building angles — professional common ground, local knowledge, industry credibility"
+  },
+  "companyProfile": {
+    "overview": "Detailed description of this specific organization — what they do, size, history, culture, mission",
+    "facilityProfile": "Specific facility intel — building type, est square footage, number of buildings, age, HVAC system complexity",
+    "recentNews": "Notable recent news, expansions, leadership changes, construction projects, community activity",
+    "bondOrFunding": "Bond referendums, capital improvement plans, grants, state/federal programs, or other funding vehicles relevant to facility investment"
+  },
+  "buildingIntel": {
+    "constructionEra": "Estimated build period and what that specifically means — R-22 vs 410A, equipment age, likely deferred maintenance",
+    "estimatedSqFt": "Estimated total conditioned square footage",
+    "hvacComplexity": "Low / Medium / High",
+    "likelyEquipment": "Specific equipment types likely present — brand assumptions where reasonable, system types, controls generation",
+    "permitNotes": "Exactly what to search in county permit records, what open or recent permits signal, how to use this in conversation",
+    "utilityNotes": "Specific utility providers in this ZIP and active rebate/incentive programs {opco} can help the customer access"
+  },
+  "documentInsights": "If customer files were provided: summarize key findings — equipment mentioned, issues discussed, prior quotes, relationship history, action items. If no files: 'No customer files provided.'",
+  "competitiveLandscape": [
+    {
+      "name": "Real competitor name in this specific market",
+      "type": "HVAC Service / Controls / Energy",
+      "presence": "Their reputation and footprint in this specific market area",
+      "weakness": "Specific exploitable gap that {opco} wins on",
+      "tags": ["HVAC"]
+    }
+  ],
+  "intelligenceAlerts": [
+    {"icon":"🔥","type":"red","text":"High-priority or urgent intel"},
+    {"icon":"💡","type":"blue","text":"Strategic opportunity"},
+    {"icon":"📰","type":"green","text":"News, funding signal, or market trend"}
+  ],
+  "opcoExperience": {
+    "relevantVertical": "Vertical market this prospect falls into",
+    "credibilityStatement": "Confident, specific statement {opco} can make about serving this type of customer",
+    "similarCustomers": ["Similar customer name or type from reference list or general market knowledge"],
+    "differentiators": ["3 specific things that differentiate {opco} for this customer type — not generic"]
+  },
+  "facilityPainPoints": [
+    {
+      "pain": "Specific, named HVAC or facility challenge highly probable for this organization",
+      "evidence": "Why this is almost certainly a real issue — building age, usage patterns, industry norms, anything from uploaded files",
+      "opportunity": "Exactly what {opco} should offer and how to frame it for {callType} call",
+      "roiAngle": "Financial framing with specifics — dollar ranges, payback periods, percentages"
+    }
+  ],
+  "roiFramework": {
+    "cards": [
+      {"label":"Energy Savings","value":"15-25%","sub":"with system modernization"},
+      {"label":"PM vs Reactive","value":"3-5×","sub":"cost of emergency repairs"},
+      {"label":"Equipment Life","value":"+5-8 yrs","sub":"with proactive maintenance"}
+    ],
+    "energySavings": "Specific energy narrative for this facility type and size",
+    "maintenanceCost": "Reactive vs planned maintenance cost comparison with estimates",
+    "riskReduction": "What a major failure would cost THIS organization — be specific",
+    "fundingAngles": "Specific grants, rebates, utility programs, or financing available to offset investment"
+  },
+  "sellingStrategy": {
+    "challengerInsight": "THE counterintuitive insight this buyer doesn't have that completely reframes how they should think about HVAC — specific to their world, not generic",
+    "spinFramework": "Walk the salesperson through S→P→I→N with example questions for each stage specific to this buyer and {callType}",
+    "hopeIsNot": "The specific assumption this buyer is clinging to — and the concrete plan FSP offers instead, with data",
+    "newStrategicSelling": "Full Miller-Heiman map: Economic Buyer (likely who, what they care about), User Buyer (who, what they need), Technical Buyer (who, how to handle), Coach (how to find/develop one). Political dynamics to watch for.",
+    "openingApproach": "Word-for-word coaching for the first 90 seconds — exactly what to say, what tone to strike, what to ask first",
+    "positioningStatement": "One powerful sentence positioning {opco} as the obvious partner for this customer"
+  },
+  "talkingPoints": [
+    "Specific value statement tailored to this buyer's exact world — no generic marketing language"
+  ],
+  "discoveryQuestions": [
+    {"question":"Specific question","category":"Facility Assessment","rationale":"What to listen for and why it matters strategically","followUp":"What to ask if they give a vague answer"},
+    {"question":"Specific question","category":"Pain & Urgency","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Budget & Authority","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Current Vendor","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Decision Process","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Energy & Sustainability","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Compliance & Risk","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Expansion & Growth","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Pain & Urgency","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Facility Assessment","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Budget & Authority","rationale":"Why this matters","followUp":"Follow-up"},
+    {"question":"Specific question","category":"Current Vendor","rationale":"Why this matters","followUp":"Follow-up"}
+  ],
+  "objectionHandling": [
+    {
+      "objection": "Specific, realistic objection this customer type gives for {callType} call",
+      "response": "Word-for-word response using Challenger/SPIN — confident and consultative, not defensive or desperate"
+    }
+  ],
+  "walkAway": {
+    "mustHaves": [
+      {"icon":"📋","label":"Commitment Needed","text":"Specific commitment to lock in before leaving"},
+      {"icon":"📊","label":"Intel to Gather","text":"Key information to uncover during this meeting"},
+      {"icon":"🤝","label":"Relationship Goal","text":"Relationship outcome to achieve in this meeting"}
+    ],
+    "nextSteps": "Exact language to propose next steps at close of meeting — be specific to {callType}",
+    "successLooks": "Concrete description of a successful outcome from this specific meeting"
+  },
+  "prepChecklist": [
+    "Specific actionable prep task to complete before the meeting"
+  ]
+}
+
+Make every section feel handcrafted for {name} at {company}. The salesperson should walk in feeling like the most prepared person in the room.`;
+
+// Initialize prompt editors
+document.getElementById('systemPromptEditor').value=DEFAULT_SYSTEM;
+document.getElementById('userPromptEditor').value=DEFAULT_USER_TEMPLATE;
+
+function togglePromptEditor(){
+  const ed=document.getElementById('promptEditor');
+  ed.classList.toggle('open');
+  document.getElementById('promptToggleLabel').textContent=ed.classList.contains('open')?'⚙️ Advanced — Hide Prompt Editor':'⚙️ Advanced — Edit AI Prompt';
+}
+function resetPrompts(){
+  document.getElementById('systemPromptEditor').value=DEFAULT_SYSTEM;
+  document.getElementById('userPromptEditor').value=DEFAULT_USER_TEMPLATE;
+}
+
+// ── LOADING MESSAGES ──
+const loadingMessages=[
+  'Researching company & contact profile...','Analyzing building records & facility data...',
+  'Identifying HVAC pain points...','Scouting local competition...',
+  'Checking news & bond referendums...','Building objection handling playbook...',
+  'Crafting discovery questions...','Applying selling strategy frameworks...','Finalizing your brief...'
+];
+
+// ── GENERATE ──
+async function generateBrief(){
+  const contactName=document.getElementById('contactName').value.trim();
+  const jobTitle=document.getElementById('jobTitle').value.trim();
+  const companyName=document.getElementById('companyName').value.trim();
+  const address=document.getElementById('address').value.trim();
+  const context=document.getElementById('context').value.trim();
+  if(!contactName||!jobTitle||!companyName||!address){showError('Please fill in Contact, Title, Company, and Address.');return;}
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('generateBtn').disabled=true;
+  document.getElementById('loadingState').classList.add('visible');
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('results').innerHTML='';
+  let msgIdx=0;
+  const stepEl=document.getElementById('loadingStep');
+  const msgInt=setInterval(()=>{msgIdx=(msgIdx+1)%loadingMessages.length;stepEl.textContent=loadingMessages[msgIdx];},1900);
+
+  const systemPrompt=document.getElementById('systemPromptEditor').value;
+  const userTemplate=document.getElementById('userPromptEditor').value;
+  const custCtx=buildCustomerContext();
+  const docCtx=uploadedDocText?`UPLOADED CUSTOMER FILES:\n${uploadedDocText}`:'No customer files uploaded.';
+
+  const userPrompt=userTemplate
+    .replace(/\{name\}/g,contactName).replace(/\{title\}/g,jobTitle)
+    .replace(/\{company\}/g,companyName).replace(/\{address\}/g,address)
+    .replace(/\{context\}/g,context||'None provided')
+    .replace(/\{opco\}/g,selectedOpCo).replace(/\{region\}/g,selectedRegion)
+    .replace(/\{services\}/g,selectedServices).replace(/\{markets\}/g,selectedMarkets)
+    .replace(/\{differentiators\}/g,selectedDiff)
+    .replace(/\{callType\}/g,selectedCallType).replace(/\{callDesc\}/g,selectedCallDesc)
+    .replace(/\{customerContext\}/g,custCtx).replace(/\{docContext\}/g,docCtx);
+
+  try{
+    const res=await fetch('https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/anthropicProxy',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
+    });
+    clearInterval(msgInt);
+    if(!res.ok) throw new Error(`API error ${res.status}`);
+    const data=await res.json();
+    const rawText=data.content.map(b=>b.text||'').join('');
+    let brief;
+    try{
+      const cleaned=rawText.replace(/```json|```/g,'').trim();
+      const m=cleaned.match(/\{[\s\S]*\}/);
+      if(!m) throw new Error('no json');
+      brief=JSON.parse(m[0]);
+    } catch(e){console.error('Raw:',rawText);throw new Error('Could not parse — try again. See console for raw output.');}
+    renderBrief(brief,{contactName,jobTitle,companyName,address,opco:selectedOpCo,state:selectedState,callType:selectedCallType});
+  } catch(err){
+    clearInterval(msgInt);
+    showError(err.message||'Something went wrong. Please try again.');
+  } finally{
+    document.getElementById('loadingState').classList.remove('visible');
+    document.getElementById('generateBtn').disabled=false;
+  }
+}
+
+function showError(msg){const e=document.getElementById('errorMsg');e.textContent=msg;e.classList.add('visible');}
+
+// ── RENDER ──
+const catColors={'Facility Assessment':'#a8c8e8','Budget & Authority':'#c9a84c','Pain & Urgency':'#e85d26','Decision Process':'#9b8fdc','Current Vendor':'#6bcfb0','Energy & Sustainability':'#2ecc71','Expansion & Growth':'#74b9ff','Compliance & Risk':'#fd79a8'};
+
+function toggleSection(id){
+  const body=document.getElementById(id);const toggle=document.getElementById('tog-'+id);
+  body.classList.toggle('collapsed');toggle.classList.toggle('open');
+}
+function sec(icon,title,id,content,open=true){
+  return `<div class="section" id="sec-${id}">
+    <div class="section-header" onclick="toggleSection('bd-${id}')">
+      <div class="section-icon">${icon}</div>
+      <div class="section-title">${title}</div>
+      <div class="section-toggle ${open?'open':''}" id="tog-bd-${id}">▼</div>
+    </div>
+    <div class="section-body ${open?'':'collapsed'}" id="bd-${id}">${content}</div>
+  </div>`;
+}
+function lines(str){if(!str)return[];return str.split('\n').map(l=>l.replace(/^[-•\d.]+\s*/,'')).filter(l=>l.trim().length>2);}
+
+function renderBrief(b,meta){
+  const today=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const r=document.getElementById('results');
+
+  const callTypeBadgeColors={discovery:'#74b9ff',pm:'#2ecc71',project:'#c9a84c',followup:'#a8c8e8'};
+  const callTypeLabels={discovery:'Discovery Call',pm:'PM / Service Contract',project:'Project / Capital Work',followup:'Follow-Up / Proposal'};
+
+  const callSumHtml=`<div class="intel-item blue"><span class="intel-icon">🎯</span><span>${b.callTypeSummary||'See brief below for full guidance.'}</span></div>`;
+
+  const contactHtml=`
+    <div class="person-card">
+      <div class="person-avatar">${b.contactProfile.initials||meta.contactName.slice(0,2).toUpperCase()}</div>
+      <div class="person-info"><h3>${b.contactProfile.name}</h3><div class="person-title">${b.contactProfile.title}</div><p>${b.contactProfile.background}</p></div>
+    </div>
+    <div class="section-subhead">Buyer Role (Miller-Heiman)</div>
+    <div class="intel-item blue"><span class="intel-icon">🎯</span><span>${b.contactProfile.buyerRole}</span></div>
+    <div class="section-subhead">How to Approach Them</div>
+    <div class="intel-item"><span class="intel-icon">🧠</span><span>${b.contactProfile.personalityNotes}</span></div>
+    <div class="section-subhead">LinkedIn Research — Do This Before the Meeting</div>
+    <div class="intel-item"><span class="intel-icon">🔍</span><span>${b.contactProfile.linkedinTips}</span></div>
+    <div class="section-subhead">Rapport & Credibility Angles</div>
+    ${lines(b.contactProfile.connectionAngles).map(l=>`<div class="talking-point">${l}</div>`).join('')}`;
+
+  const companyHtml=`<p>${b.companyProfile.overview}</p>
+    <div class="section-subhead">Facility Profile</div><p>${b.companyProfile.facilityProfile}</p>
+    ${b.companyProfile.recentNews?`<div class="section-subhead">Recent News & Activity</div><div class="intel-item green"><span class="intel-icon">📰</span><span>${b.companyProfile.recentNews}</span></div>`:''}
+    ${b.companyProfile.bondOrFunding?`<div class="section-subhead">Bond, Grants & Funding Opportunities</div><div class="intel-item"><span class="intel-icon">💰</span><span>${b.companyProfile.bondOrFunding}</span></div>`:''}`;
+
+  const buildingHtml=`
+    <div class="building-grid">
+      <div class="building-stat"><div class="stat-label">Construction Era</div><div class="stat-value" style="font-size:14px;letter-spacing:0">${b.buildingIntel.constructionEra.split(' ').slice(0,4).join(' ')}</div></div>
+      <div class="building-stat"><div class="stat-label">Est. Sq Footage</div><div class="stat-value">${b.buildingIntel.estimatedSqFt}</div></div>
+      <div class="building-stat"><div class="stat-label">HVAC Complexity</div><div class="stat-value" style="color:${b.buildingIntel.hvacComplexity==='High'?'var(--accent)':b.buildingIntel.hvacComplexity==='Medium'?'var(--gold)':'var(--success)'}">${b.buildingIntel.hvacComplexity}</div></div>
+    </div>
+    <div class="section-subhead">Likely Equipment</div><div class="intel-item blue"><span class="intel-icon">⚙️</span><span>${b.buildingIntel.likelyEquipment}</span></div>
+    <div class="section-subhead">Permit Record Strategy</div><div class="intel-item"><span class="intel-icon">📄</span><span>${b.buildingIntel.permitNotes}</span></div>
+    <div class="section-subhead">Local Utilities & Incentives</div><div class="intel-item green"><span class="intel-icon">⚡</span><span>${b.buildingIntel.utilityNotes}</span></div>`;
+
+  const docHtml=b.documentInsights&&b.documentInsights!=='No customer files provided.'?
+    `<div class="intel-item blue"><span class="intel-icon">📎</span><span>${b.documentInsights}</span></div>`:
+    `<div class="intel-item"><span class="intel-icon">📎</span><span>No customer files were uploaded for this brief. Upload prior proposals, quotes, or emails for richer customization.</span></div>`;
+
+  const compHtml=(b.competitiveLandscape||[]).map(c=>`
+    <div class="competitor-item">
+      <div class="competitor-name">${c.name}</div>
+      <div style="margin-bottom:5px">${(c.tags||[]).map(t=>`<span class="competitor-tag tag-${t==='HVAC'?'hvac':t==='Controls'?'controls':'energy'}">${t}</span>`).join('')}</div>
+      <div class="competitor-detail">${c.presence}</div>
+      <div class="intel-item red" style="margin-top:8px;margin-bottom:0"><span class="intel-icon">🎯</span><span><strong>${meta.opco} Advantage:</strong> ${c.weakness}</span></div>
+    </div>`).join('');
+
+  const alertsHtml=(b.intelligenceAlerts||[]).map(a=>`<div class="intel-item ${a.type||''}"><span class="intel-icon">${a.icon}</span><span>${a.text}</span></div>`).join('');
+
+  const expHtml=b.opcoExperience?`
+    <div class="intel-item blue"><span class="intel-icon">🏭</span><span><strong>Vertical:</strong> ${b.opcoExperience.relevantVertical}</span></div>
+    <div class="section-subhead">Credibility Statement — Say This</div>
+    <div class="talking-point">💬 "${b.opcoExperience.credibilityStatement}"</div>
+    ${(b.opcoExperience.similarCustomers||[]).length?`<div class="section-subhead">Similar Customers We Serve</div>${b.opcoExperience.similarCustomers.map(c=>`<div class="experience-item">✓ ${c}</div>`).join('')}`:''}
+    <div class="section-subhead">Why ${meta.opco} Wins in This Market</div>
+    ${(b.opcoExperience.differentiators||[]).map(d=>`<div class="talking-point">▸ ${d}</div>`).join('')}`:'';
+
+  const painHtml=`<ul class="insight-list">${(b.facilityPainPoints||[]).map(p=>`
+    <li class="insight-item"><span class="bullet">▸</span>
+    <span class="text"><strong>${p.pain}</strong>
+    <span style="color:rgba(168,200,232,.7);display:block;margin:2px 0 4px">${p.evidence}</span>
+    <span style="color:var(--muted)">Offer: ${p.opportunity}</span>
+    <span style="color:var(--gold);display:block;margin-top:3px;font-size:12px">💰 ${p.roiAngle}</span>
+    </span></li>`).join('')}</ul>`;
+
+  const roiHtml=`
+    <div class="roi-grid">${(b.roiFramework.cards||[]).map(c=>`<div class="roi-card"><div class="roi-label">${c.label}</div><div class="roi-value">${c.value}</div><div class="roi-sub">${c.sub}</div></div>`).join('')}</div>
+    <div class="intel-item green"><span class="intel-icon">💡</span><span>${b.roiFramework.energySavings}</span></div>
+    <div class="intel-item blue"><span class="intel-icon">🔩</span><span>${b.roiFramework.maintenanceCost}</span></div>
+    <div class="intel-item red"><span class="intel-icon">🛡</span><span>${b.roiFramework.riskReduction}</span></div>
+    ${b.roiFramework.fundingAngles?`<div class="intel-item"><span class="intel-icon">💰</span><span>${b.roiFramework.fundingAngles}</span></div>`:''}`;
+
+  const stratHtml=`
+    <div class="strategy-callout"><div class="strategy-label">📌 Challenger Sale — Your Teaching Insight</div><div class="strategy-text">${b.sellingStrategy.challengerInsight}</div></div>
+    <div class="strategy-callout"><div class="strategy-label">🔄 SPIN Selling — Question Framework</div><div class="strategy-text">${b.sellingStrategy.spinFramework}</div></div>
+    <div class="strategy-callout"><div class="strategy-label">🚫 Hope Is Not a Strategy — Challenge Their Assumption</div><div class="strategy-text">${b.sellingStrategy.hopeIsNot}</div></div>
+    <div class="strategy-callout"><div class="strategy-label">♟ New Strategic Selling — Buying Influences Map</div><div class="strategy-text">${b.sellingStrategy.newStrategicSelling}</div></div>
+    <div class="section-subhead">How to Open the Meeting</div>
+    <div class="intel-item blue"><span class="intel-icon">🎙</span><span>${b.sellingStrategy.openingApproach}</span></div>
+    <div class="section-subhead">Your Positioning Statement</div>
+    <div class="intel-item green"><span class="intel-icon">⭐</span><span style="font-style:italic;font-size:15px">"${b.sellingStrategy.positioningStatement}"</span></div>`;
+
+  const talkHtml=(b.talkingPoints||[]).map(t=>`<div class="talking-point">✓ ${t}</div>`).join('');
+
+  const questHtml=`<div class="questions-grid">${(b.discoveryQuestions||[]).map((q,i)=>`
+    <div class="question-item">
+      <span class="q-num">${String(i+1).padStart(2,'0')}</span>
+      <div>
+        <div class="q-text">${q.question}</div>
+        <div class="q-meta"><span class="q-category" style="color:${catColors[q.category]||'var(--muted)'}">${q.category}</span><span class="q-rationale">${q.rationale}</span></div>
+        ${q.followUp?`<div style="margin-top:5px;padding:6px 9px;background:rgba(255,255,255,.03);font-size:12px;color:var(--muted);border-left:2px solid rgba(168,200,232,.2)">↳ If vague: "${q.followUp}"</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  const objHtml=(b.objectionHandling||[]).map(o=>`
+    <div class="objection-item">
+      <div class="objection-q">❌ "${o.objection}"</div>
+      <div class="objection-a">✅ ${o.response}</div>
+    </div>`).join('');
+
+  const walkHtml=`
+    <div class="walkaway-grid">${(b.walkAway.mustHaves||[]).map(w=>`
+      <div class="walkaway-item"><div class="wa-icon">${w.icon}</div><div class="wa-label">${w.label}</div><div class="wa-text">${w.text}</div></div>`).join('')}</div>
+    <div class="section-subhead" style="margin-top:14px">Proposed Next Step — Use These Words</div>
+    <div class="intel-item green"><span class="intel-icon">➡️</span><span>${b.walkAway.nextSteps}</span></div>
+    <div class="section-subhead">What Success Looks Like</div>
+    <div class="intel-item blue"><span class="intel-icon">🏆</span><span>${b.walkAway.successLooks}</span></div>`;
+
+  const checkHtml=(b.prepChecklist||[]).map((item,i)=>`
+    <div style="display:flex;gap:12px;padding:10px 12px;background:rgba(255,255,255,.03);margin-bottom:5px;align-items:flex-start;">
+      <span style="color:var(--accent);font-family:'DM Mono';font-size:12px;flex-shrink:0;margin-top:2px">${String(i+1).padStart(2,'0')}</span>
+      <span style="font-size:14px;line-height:1.6">${item}</span>
+    </div>`).join('');
+
+  const sections=[
+    ['🎯',`Call Strategy — ${callTypeLabels[meta.callType]||'Discovery'}`,  'callsum',callSumHtml],
+    ['👤',`Contact — ${meta.contactName}`,'contact',contactHtml],
+    ['🏢','Company & Facility Profile','company',companyHtml],
+    ['🏗','Building Intelligence','building',buildingHtml],
+    ['📎','Customer File Insights','docs',docHtml],
+    ['⚔️','Competitive Landscape','comp',compHtml],
+    ['⚡','Intelligence Alerts','alerts',alertsHtml],
+    ['🏆',`Our Experience — Why ${meta.opco} Wins`,'exp',expHtml],
+    ['🔧','Facility Pain Points & Opportunities','pain',painHtml],
+    ['💰','ROI Framework','roi',roiHtml],
+    ['🎯','Selling Strategy','strategy',stratHtml],
+    ['💬','Value Talking Points','talking',talkHtml],
+    ['❓',`Discovery Questions (${(b.discoveryQuestions||[]).length})`,'questions',questHtml],
+    ['🛡','Objection Handling','objections',objHtml],
+    ['🏁','Walk Away Goals','walkaway',walkHtml],
+    ['✅','Pre-Meeting Checklist','checklist',checkHtml]
+  ];
+
+  const tocIds=['callsum','contact','company','building','docs','comp','alerts','exp','pain','roi','strategy','talking','questions','objections','walkaway','checklist'];
+  const tocLabels=['Strategy','Contact','Company','Building','Files','Competition','Alerts','Our Fit','Pain Points','ROI','Sell Strategy','Talking Pts','Questions','Objections','Walk Away','Checklist'];
+
+  r.innerHTML=`
+    <div class="meeting-header">
+      <div class="meeting-meta">
+        <div class="meeting-contact">
+          <h2>${meta.contactName}</h2>
+          <div class="title-line">${meta.jobTitle}</div>
+          <div class="company-line">${meta.companyName} — ${meta.address}</div>
+        </div>
+        <div class="meeting-badges">
+          <div class="badge badge-opco">📍 ${meta.opco}</div>
+          <div class="badge" style="background:${callTypeBadgeColors[meta.callType]?'rgba(116,185,255,.1)':'rgba(201,168,76,.1)'};color:${callTypeBadgeColors[meta.callType]||'#a8c8e8'};border:1px solid ${callTypeBadgeColors[meta.callType]||'#a8c8e8'}44">${callTypeLabels[meta.callType]||'Call'}</div>
+          <div class="badge badge-date">📅 ${today}</div>
+        </div>
+      </div>
+    </div>
+    <div class="toc no-print">
+      <span style="font-size:11px;color:var(--muted);letter-spacing:1px;align-self:center;margin-right:4px">JUMP TO →</span>
+      ${tocIds.map((id,i)=>`<span class="toc-item" onclick="document.getElementById('sec-${id}').scrollIntoView({behavior:'smooth'})">${tocLabels[i]}</span>`).join('')}
+    </div>
+    ${sections.map(([icon,title,id,content])=>sec(icon,title,id,content)).join('')}
+    <div class="action-bar no-print">
+      <button class="action-btn primary" onclick="window.print()">🖨 Print / PDF</button>
+      <button class="action-btn" id="copyBtn" onclick="copyBrief()">📋 Copy Full Brief</button>
+      <button class="action-btn" onclick="resetForm()">↩ New Brief</button>
+    </div>`;
+
+  r.classList.add('visible');
+  r.scrollIntoView({behavior:'smooth',block:'start'});
+  window._brief=b; window._meta=meta;
+}
+
+function copyBrief(){
+  if(!window._brief) return;
+  const b=window._brief,m=window._meta;
+  const d='\n'+'─'.repeat(60)+'\n';
+  let t=`FSP SALES INTELLIGENCE BRIEF${d}`;
+  t+=`Contact: ${m.contactName} | ${m.jobTitle}\nCompany: ${m.companyName}\nAddress: ${m.address}\nOpCo: ${m.opco} | Date: ${new Date().toLocaleDateString()}\n`;
+  t+=`${d}CALL STRATEGY\n${b.callTypeSummary||''}\n`;
+  t+=`${d}CONTACT PROFILE\nBackground: ${b.contactProfile.background}\nBuyer Role: ${b.contactProfile.buyerRole}\nApproach: ${b.contactProfile.personalityNotes}\nLinkedIn: ${b.contactProfile.linkedinTips}\nRapport: ${b.contactProfile.connectionAngles}\n`;
+  t+=`${d}COMPANY PROFILE\n${b.companyProfile.overview}\nFacility: ${b.companyProfile.facilityProfile}\n`;
+  if(b.companyProfile.recentNews) t+=`News: ${b.companyProfile.recentNews}\n`;
+  if(b.companyProfile.bondOrFunding) t+=`Funding: ${b.companyProfile.bondOrFunding}\n`;
+  t+=`${d}BUILDING INTEL\nEra: ${b.buildingIntel.constructionEra}\nSq Ft: ${b.buildingIntel.estimatedSqFt}\nComplexity: ${b.buildingIntel.hvacComplexity}\nEquipment: ${b.buildingIntel.likelyEquipment}\nPermits: ${b.buildingIntel.permitNotes}\nUtilities: ${b.buildingIntel.utilityNotes}\n`;
+  if(b.documentInsights&&b.documentInsights!=='No customer files provided.') t+=`${d}CUSTOMER FILE INSIGHTS\n${b.documentInsights}\n`;
+  t+=`${d}COMPETITIVE LANDSCAPE\n`;
+  (b.competitiveLandscape||[]).forEach(c=>{t+=`• ${c.name} — ${c.presence}\n  ${m.opco} Advantage: ${c.weakness}\n`;});
+  t+=`${d}INTELLIGENCE ALERTS\n`;
+  (b.intelligenceAlerts||[]).forEach(a=>{t+=`${a.icon} ${a.text}\n`;});
+  if(b.opcoExperience){
+    t+=`${d}WHY ${m.opco.toUpperCase()} WINS HERE\n"${b.opcoExperience.credibilityStatement}"\n`;
+    (b.opcoExperience.similarCustomers||[]).forEach(c=>{t+=`  ✓ ${c}\n`;});
+    (b.opcoExperience.differentiators||[]).forEach(d2=>{t+=`  ▸ ${d2}\n`;});
+  }
+  t+=`${d}FACILITY PAIN POINTS\n`;
+  (b.facilityPainPoints||[]).forEach(p=>{t+=`▸ ${p.pain}\n  Why: ${p.evidence}\n  Offer: ${p.opportunity}\n  ROI: ${p.roiAngle}\n\n`;});
+  t+=`${d}ROI FRAMEWORK\nEnergy: ${b.roiFramework.energySavings}\nMaintenance: ${b.roiFramework.maintenanceCost}\nRisk: ${b.roiFramework.riskReduction}\n`;
+  if(b.roiFramework.fundingAngles) t+=`Funding: ${b.roiFramework.fundingAngles}\n`;
+  t+=`${d}SELLING STRATEGY\nCHALLENGER:\n${b.sellingStrategy.challengerInsight}\n\nSPIN:\n${b.sellingStrategy.spinFramework}\n\nHOPE IS NOT A STRATEGY:\n${b.sellingStrategy.hopeIsNot}\n\nNEW STRATEGIC SELLING:\n${b.sellingStrategy.newStrategicSelling}\n\nOPENING:\n${b.sellingStrategy.openingApproach}\n\nPOSITIONING:\n"${b.sellingStrategy.positioningStatement}"\n`;
+  t+=`${d}TALKING POINTS\n`;
+  (b.talkingPoints||[]).forEach((p,i)=>{t+=`${i+1}. ${p}\n`;});
+  t+=`${d}DISCOVERY QUESTIONS\n`;
+  (b.discoveryQuestions||[]).forEach((q,i)=>{t+=`${i+1}. [${q.category}] ${q.question}\n   Why: ${q.rationale}\n   If vague: "${q.followUp||'Tell me more about that...'}"\n\n`;});
+  t+=`${d}OBJECTION HANDLING\n`;
+  (b.objectionHandling||[]).forEach(o=>{t+=`OBJECTION: "${o.objection}"\nRESPONSE: ${o.response}\n\n`;});
+  t+=`${d}WALK AWAY GOALS\n`;
+  (b.walkAway.mustHaves||[]).forEach(w=>{t+=`${w.icon} ${w.label}: ${w.text}\n`;});
+  t+=`\nNext Step: ${b.walkAway.nextSteps}\nSuccess = ${b.walkAway.successLooks}\n`;
+  t+=`${d}PRE-MEETING CHECKLIST\n`;
+  (b.prepChecklist||[]).forEach((item,i)=>{t+=`${i+1}. ${item}\n`;});
+  navigator.clipboard.writeText(t).then(()=>{
+    const btn=document.getElementById('copyBtn');const orig=btn.textContent;
+    btn.textContent='✓ Copied!';setTimeout(()=>{btn.textContent=orig;},2500);
+  });
+}
+
+function resetForm(){
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('results').innerHTML='';
+  ['contactName','jobTitle','companyName','address','context'].forEach(id=>document.getElementById(id).value='');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
