@@ -214,6 +214,11 @@
   .call-type-btn:hover{border-color:var(--gold);color:var(--white);}
   .call-type-btn.active{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold);}
 
+  /* Scope Toggle */
+  .scope-btn{background:var(--navy-mid);border:1px solid rgba(168,200,232,.15);color:var(--muted);padding:10px 18px;font-family:'DM Sans';font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;flex:1;min-width:200px;line-height:1.6;}
+  .scope-btn:hover{border-color:var(--accent);color:var(--white);}
+  .scope-btn.active{background:rgba(232,93,38,.15);border-color:var(--accent);color:var(--white);}
+
   @media(max-width:600px){
     .form-grid,.roi-grid,.building-grid,.walkaway-grid{grid-template-columns:1fr;}
     .meeting-meta{flex-direction:column;}
@@ -284,17 +289,33 @@
     </div>
   </div>
 
+  <!-- Scope Toggle -->
+  <div class="form-card no-print" style="padding:14px 22px;margin-bottom:12px;">
+    <label style="display:block;margin-bottom:10px;">Who Are You Meeting? <span style="opacity:.5;font-size:10px;">(affects strategy and talking points)</span></label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="scope-btn active" id="scopeLocal" onclick="setScope('local',this)">
+        🏢 <strong>On-Site Contact</strong><br>
+        <span style="font-size:11px;font-weight:400;color:var(--muted)">Facility manager, building engineer, local decision maker</span>
+      </button>
+      <button class="scope-btn" id="scopeCorporate" onclick="setScope('corporate',this)">
+        🌐 <strong>Corporate / Enterprise Contact</strong><br>
+        <span style="font-size:11px;font-weight:400;color:var(--muted)">Regional or national portfolio decision maker — multi-site opportunity</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Customer Docs Upload (visible to salespeople) -->
   <div class="form-card no-print" style="padding:16px 22px;margin-bottom:12px;">
     <div>
-      <label style="display:block;margin-bottom:8px;">📎 Customer Files <span style="opacity:.5;font-size:10px;">(optional — prior proposals, quotes, emails, notes — PDF/TXT/CSV)</span></label>
+      <label style="display:block;margin-bottom:8px;">📎 Customer Files <span style="opacity:.5;font-size:10px;">(optional — prior proposals, quotes, emails, notes — PDF, Word, Excel, TXT)</span></label>
       <div class="upload-zone" id="docsZone" onclick="document.getElementById('docFiles').click()">
         <div class="upload-label">Drop files here or click to browse<br><span style="font-size:10px;opacity:.7">Claude will read and incorporate into the brief</span></div>
         <div class="upload-status" id="docsStatus"></div>
       </div>
-      <input type="file" id="docFiles" accept=".pdf,.txt,.csv,.md" multiple style="display:none" onchange="handleDocFiles(event)"/>
+      <input type="file" id="docFiles" accept=".pdf,.txt,.csv,.md,.doc,.docx,.xls,.xlsx" multiple style="display:none" onchange="handleDocFiles(event)"/>
     </div>
   </div>
+
 
   <!-- Main Form -->
   <div class="form-card no-print">
@@ -324,20 +345,25 @@
     <div class="error-msg" id="errorMsg"></div>
   </div>
 
-  <!-- Prompt Editor (Advanced) -->
+  <!-- Hidden prompt textareas — populated by JS -->
+  <div style="display:none">
+    <textarea id="systemPromptEditor"></textarea>
+    <textarea id="userPromptEditor"></textarea>
+  </div>
+
+  <!-- Prompt Editor (Advanced, session-only) -->
   <div class="no-print" style="margin-bottom:14px;">
     <div class="prompt-editor-toggle" onclick="togglePromptEditor()">
-      <span id="promptToggleLabel">⚙️ Advanced — Edit AI Prompt</span>
-      <span style="font-size:10px;color:var(--muted)">(customize what the AI focuses on)</span>
+      <span id="promptToggleLabel">⚙️ Advanced — Customize AI Prompt</span>
+      <span style="font-size:10px;color:var(--muted)">(session only — resets when you close or refresh)</span>
     </div>
     <div class="prompt-editor" id="promptEditor">
-      <label style="display:block;margin-bottom:8px;color:var(--gold)">System Prompt — Defines the AI's expertise and behavior</label>
-      <textarea id="systemPromptEditor"></textarea>
-      <div class="prompt-editor-note">⚠️ This is the AI's "instruction set." Changes here affect every brief. Modify with care. Reset to default by refreshing the page.</div>
+      <div class="prompt-editor-note" style="margin-bottom:10px;">⚠️ Changes here apply to <strong>your session only</strong> and reset automatically when you close or refresh the page. They do not affect other users.</div>
+      <label style="display:block;margin-bottom:8px;color:var(--gold)">System Prompt</label>
+      <textarea id="systemPromptEditorVisible"></textarea>
       <div style="margin-top:12px;">
-        <label style="display:block;margin-bottom:8px;color:var(--gold)">User Prompt Template — The brief request sent to the AI</label>
-        <textarea id="userPromptEditor" style="min-height:300px;"></textarea>
-        <div class="prompt-editor-note">Use {name}, {title}, {company}, {address}, {context}, {opco}, {region}, {services}, {markets}, {differentiators}, {callType}, {callDesc}, {customerContext}, {docContext} as placeholders. These are filled in automatically when generating.</div>
+        <label style="display:block;margin-bottom:8px;color:var(--gold)">User Prompt Template</label>
+        <textarea id="userPromptEditorVisible" style="min-height:300px;"></textarea>
       </div>
       <button onclick="resetPrompts()" style="margin-top:12px;padding:8px 16px;background:rgba(201,168,76,.15);border:1px solid var(--gold);color:var(--gold);font-size:12px;cursor:pointer;font-family:'DM Sans';font-weight:600;">↺ Reset to Default</button>
     </div>
@@ -360,6 +386,7 @@ let selectedMarkets='manufacturing, healthcare, K-12 schools, commercial office,
 let selectedRegion='central Indiana';
 let selectedDiff='deep central Indiana market relationships, Daikin Premier partner';
 let selectedCallType='discovery';
+let selectedScope='local'; // 'local' = on-site contact | 'corporate' = enterprise/regional decision maker
 let selectedCallDesc='First meeting — learn about their business, build rapport, uncover needs';
 let uploadedDocText='';
 
@@ -429,12 +456,20 @@ async function handleDocFiles(event){
   for(const file of files){
     try{
       if(file.type==='application/pdf'||file.name.endsWith('.pdf')){
-        // Read PDF as base64 — will be sent to Claude as document
         const ab=await file.arrayBuffer();
         const bytes=new Uint8Array(ab);
         let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b));
         const b64=btoa(bin);
         allText+=`\n[PDF FILE: ${file.name}]\n[BASE64_PDF:${b64.substring(0,50000)}]\n`;
+      } else if(file.name.endsWith('.docx')||file.name.endsWith('.doc')){
+        allText+=`\n[WORD FILE: ${file.name}]\n[Note: Word file attached — extract all text content, tables, and notes from this document]\n`;
+        // Also attempt raw text extraction
+        try{const text=await file.text();allText+=text.substring(0,6000);}catch(e){}
+        allText+='\n';
+      } else if(file.name.endsWith('.xlsx')||file.name.endsWith('.xls')){
+        allText+=`\n[EXCEL FILE: ${file.name}]\n[Note: Excel file attached — extract all cell values, sheet names, and data from this spreadsheet]\n`;
+        try{const text=await file.text();allText+=text.substring(0,6000);}catch(e){}
+        allText+='\n';
       } else {
         const text=await file.text();
         allText+=`\n[FILE: ${file.name}]\n${text.substring(0,8000)}\n`;
@@ -489,6 +524,7 @@ PROSPECT:
 - Company: {company}
 - Address: {address}
 - Context: {context}
+- Meeting Scope: {scope}
 
 {customerContext}
 
@@ -505,6 +541,7 @@ INSTRUCTIONS:
 8. For PM/service contract calls: emphasize maintenance ROI, equipment reliability, budgeting predictability
 9. For project calls: emphasize capital planning, equipment end-of-life, funding sources, decision process
 10. For discovery calls: emphasize open-ended questions, listening, and needs identification
+11. MEETING SCOPE — this is critical: {scopeInstruction}
 
 Respond ONLY with this JSON structure — fill every field with specific, actionable content:
 
@@ -514,17 +551,23 @@ Respond ONLY with this JSON structure — fill every field with specific, action
     "initials": "XX",
     "name": "{name}",
     "title": "{title}",
-    "background": "Detailed profile — likely background, tenure, what their day looks like, what they care about, what stresses them out",
+    "background": "Deep profile of this specific person: likely career path, how long they have probably been in this role, what a typical day looks like, what they are measured on, what keeps them up at night, what a win looks like for them personally",
+    "socialMediaIntel": "What to look for across LinkedIn, Twitter/X, company website bios, press releases, conference speaker profiles, local business journals, and news mentions — be specific about what each source reveals and how to use it in the meeting",
+    "professionalHistory": "Likely career history based on their title and company — where they came from, what they have probably seen and experienced, what biases or preferences they likely carry from prior roles",
+    "personalIntel": "Personal angles that may be findable and usable: local community involvement, alumni affiliations, industry associations, certifications, published articles or presentations, awards — how each one is a conversation door-opener",
     "buyerRole": "Miller-Heiman role: Economic / User / Technical Buyer — what this means for how to engage them and what they need to hear",
-    "personalityNotes": "Communication style, decision-making approach, what they respond to, what to avoid, how to earn their trust",
-    "linkedinTips": "3 specific things to look for on LinkedIn before the meeting — be concrete about what each piece of info is useful for",
-    "connectionAngles": "3 specific rapport-building angles — professional common ground, local knowledge, industry credibility"
+    "personalityNotes": "Communication style, decision-making approach, what they respond to, what to avoid, how to earn their trust quickly",
+    "linkedinTips": "5 specific things to investigate on LinkedIn before the meeting — their connections, posts, endorsements, job history, activity — and exactly how each piece of information can be used in the meeting",
+    "connectionAngles": "4 specific rapport-building angles — professional common ground, local community ties, industry credibility, personal interests if findable"
   },
   "companyProfile": {
-    "overview": "Detailed description of this specific organization — what they do, size, history, culture, mission",
-    "facilityProfile": "Specific facility intel — building type, est square footage, number of buildings, age, HVAC system complexity",
-    "recentNews": "Notable recent news, expansions, leadership changes, construction projects, community activity",
-    "bondOrFunding": "Bond referendums, capital improvement plans, grants, state/federal programs, or other funding vehicles relevant to facility investment"
+    "overview": "Rich, specific description of this organization: what they do, approximate size (employees, revenue if public), founding history, ownership structure (public/private/nonprofit/government), geographic footprint, market position, and culture/mission",
+    "leadershipContext": "Key leaders relevant to this deal — who runs facilities, operations, or finance at this organization, who {name} reports to, who else might be involved in a facilities decision",
+    "facilityProfile": "Specific facility intel — building type, est square footage, number of buildings, age, construction era, occupancy patterns, operational hours, HVAC system complexity indicators",
+    "financialHealth": "Signs of financial health or constraint: budget cycles, capital plan indicators, publicly known financials, bond ratings if applicable, enrollment or occupancy trends, any signs of financial stress or growth investment",
+    "recentNews": "Notable recent developments: expansions, new construction, leadership changes, M&A activity, community announcements, awards, challenges in the news",
+    "bondOrFunding": "Bond referendums, capital improvement plans, grants, ESSER funds, state/federal programs, energy incentives, PACE financing, or other funding vehicles relevant to facility investment",
+    "decisionProcess": "How organizations like this typically make facilities/HVAC decisions — procurement process, approval levels, budget cycles, committee involvement, typical timeline from need to purchase order"
   },
   "buildingIntel": {
     "constructionEra": "Estimated build period and what that specifically means — R-22 vs 410A, equipment age, likely deferred maintenance",
@@ -624,15 +667,25 @@ Make every section feel handcrafted for {name} at {company}. The salesperson sho
 // Initialize prompt editors
 document.getElementById('systemPromptEditor').value=DEFAULT_SYSTEM;
 document.getElementById('userPromptEditor').value=DEFAULT_USER_TEMPLATE;
+// Initialize visible editors
+document.getElementById('systemPromptEditorVisible').value=DEFAULT_SYSTEM;
+document.getElementById('userPromptEditorVisible').value=DEFAULT_USER_TEMPLATE;
 
 function togglePromptEditor(){
   const ed=document.getElementById('promptEditor');
   ed.classList.toggle('open');
-  document.getElementById('promptToggleLabel').textContent=ed.classList.contains('open')?'⚙️ Advanced — Hide Prompt Editor':'⚙️ Advanced — Edit AI Prompt';
+  document.getElementById('promptToggleLabel').textContent=ed.classList.contains('open')?'⚙️ Advanced — Hide Prompt Editor':'⚙️ Advanced — Customize AI Prompt';
 }
 function resetPrompts(){
   document.getElementById('systemPromptEditor').value=DEFAULT_SYSTEM;
   document.getElementById('userPromptEditor').value=DEFAULT_USER_TEMPLATE;
+  document.getElementById('systemPromptEditorVisible').value=DEFAULT_SYSTEM;
+  document.getElementById('userPromptEditorVisible').value=DEFAULT_USER_TEMPLATE;
+}
+function setScope(scope, btn){
+  selectedScope=scope;
+  document.querySelectorAll('.scope-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 // ── LOADING MESSAGES ──
@@ -660,10 +713,21 @@ async function generateBrief(){
   const stepEl=document.getElementById('loadingStep');
   const msgInt=setInterval(()=>{msgIdx=(msgIdx+1)%loadingMessages.length;stepEl.textContent=loadingMessages[msgIdx];},1900);
 
-  const systemPrompt=document.getElementById('systemPromptEditor').value;
-  const userTemplate=document.getElementById('userPromptEditor').value;
+  // Use visible editor values if user has customized them, otherwise use defaults
+  const systemPrompt=document.getElementById('systemPromptEditorVisible').value||DEFAULT_SYSTEM;
+  const userTemplate=document.getElementById('userPromptEditorVisible').value||DEFAULT_USER_TEMPLATE;
+  // Keep hidden editors in sync
+  document.getElementById('systemPromptEditor').value=systemPrompt;
+  document.getElementById('userPromptEditor').value=userTemplate;
   const custCtx=buildCustomerContext();
   const docCtx=uploadedDocText?`UPLOADED CUSTOMER FILES:\n${uploadedDocText}`:'No customer files uploaded.';
+
+  const scopeLabel = selectedScope==='corporate'
+    ? 'CORPORATE / ENTERPRISE CONTACT — This is a regional or national portfolio decision maker managing multiple sites. Tailor ALL strategy for enterprise scale: multi-site opportunity framing, procurement process navigation, executive communication style, national account potential, regional rollout pitch, and ROI at portfolio scale. De-emphasize single-site tactics.'
+    : 'LOCAL / ON-SITE CONTACT — This is a facility manager, building engineer, or local decision maker at this specific location. Focus on site-level pain points, operational reliability, relationship building, and local credibility.';
+  const scopeInstr = selectedScope==='corporate'
+    ? 'This is a CORPORATE/ENTERPRISE contact. Frame ALL recommendations around portfolio value, multi-site scale, enterprise procurement, and regional/national opportunity. Discovery questions should uncover portfolio scope, standardization goals, and corporate decision process. ROI should be framed at portfolio scale, not single-site. Talking points should position FSP as a scalable regional partner, not just a local vendor.'
+    : 'This is a LOCAL/ON-SITE contact. Focus on building-specific pain points, local relationships, operational reliability, and fast service response. Discovery questions should uncover site-specific needs and equipment history. Position FSP as the trusted local expert.';
 
   const userPrompt=userTemplate
     .replace(/\{name\}/g,contactName).replace(/\{title\}/g,jobTitle)
@@ -673,10 +737,11 @@ async function generateBrief(){
     .replace(/\{services\}/g,selectedServices).replace(/\{markets\}/g,selectedMarkets)
     .replace(/\{differentiators\}/g,selectedDiff)
     .replace(/\{callType\}/g,selectedCallType).replace(/\{callDesc\}/g,selectedCallDesc)
-    .replace(/\{customerContext\}/g,custCtx).replace(/\{docContext\}/g,docCtx);
+    .replace(/\{customerContext\}/g,custCtx).replace(/\{docContext\}/g,docCtx)
+    .replace(/\{scope\}/g,scopeLabel).replace(/\{scopeInstruction\}/g,scopeInstr);
 
   try{
-    const res=await fetch('https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/anthropicProxy',{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
@@ -692,7 +757,7 @@ async function generateBrief(){
       if(!m) throw new Error('no json');
       brief=JSON.parse(m[0]);
     } catch(e){console.error('Raw:',rawText);throw new Error('Could not parse — try again. See console for raw output.');}
-    renderBrief(brief,{contactName,jobTitle,companyName,address,opco:selectedOpCo,state:selectedState,callType:selectedCallType});
+    renderBrief(brief,{contactName,jobTitle,companyName,address,opco:selectedOpCo,state:selectedState,callType:selectedCallType,scope:selectedScope});
   } catch(err){
     clearInterval(msgInt);
     showError(err.message||'Something went wrong. Please try again.');
@@ -737,19 +802,26 @@ function renderBrief(b,meta){
       <div class="person-avatar">${b.contactProfile.initials||meta.contactName.slice(0,2).toUpperCase()}</div>
       <div class="person-info"><h3>${b.contactProfile.name}</h3><div class="person-title">${b.contactProfile.title}</div><p>${b.contactProfile.background}</p></div>
     </div>
+    ${b.contactProfile.professionalHistory?`<div class="section-subhead">Career & Professional History</div><div class="intel-item blue"><span class="intel-icon">💼</span><span>${b.contactProfile.professionalHistory}</span></div>`:''}
+    ${b.contactProfile.personalIntel?`<div class="section-subhead">Personal Intel — Rapport Hooks</div><div class="intel-item green"><span class="intel-icon">🤝</span><span>${b.contactProfile.personalIntel}</span></div>`:''}
+    <div class="section-subhead">Social Media & Online Research — Do This Before the Meeting</div>
+    <div class="intel-item"><span class="intel-icon">🌐</span><span>${b.contactProfile.socialMediaIntel||b.contactProfile.linkedinTips}</span></div>
     <div class="section-subhead">Buyer Role (Miller-Heiman)</div>
     <div class="intel-item blue"><span class="intel-icon">🎯</span><span>${b.contactProfile.buyerRole}</span></div>
     <div class="section-subhead">How to Approach Them</div>
     <div class="intel-item"><span class="intel-icon">🧠</span><span>${b.contactProfile.personalityNotes}</span></div>
-    <div class="section-subhead">LinkedIn Research — Do This Before the Meeting</div>
+    <div class="section-subhead">LinkedIn Research Checklist</div>
     <div class="intel-item"><span class="intel-icon">🔍</span><span>${b.contactProfile.linkedinTips}</span></div>
     <div class="section-subhead">Rapport & Credibility Angles</div>
     ${lines(b.contactProfile.connectionAngles).map(l=>`<div class="talking-point">${l}</div>`).join('')}`;
 
   const companyHtml=`<p>${b.companyProfile.overview}</p>
+    ${b.companyProfile.leadershipContext?`<div class="section-subhead">Leadership & Decision Makers</div><div class="intel-item blue"><span class="intel-icon">👥</span><span>${b.companyProfile.leadershipContext}</span></div>`:''}
     <div class="section-subhead">Facility Profile</div><p>${b.companyProfile.facilityProfile}</p>
+    ${b.companyProfile.financialHealth?`<div class="section-subhead">Financial Health & Budget Signals</div><div class="intel-item"><span class="intel-icon">📊</span><span>${b.companyProfile.financialHealth}</span></div>`:''}
     ${b.companyProfile.recentNews?`<div class="section-subhead">Recent News & Activity</div><div class="intel-item green"><span class="intel-icon">📰</span><span>${b.companyProfile.recentNews}</span></div>`:''}
-    ${b.companyProfile.bondOrFunding?`<div class="section-subhead">Bond, Grants & Funding Opportunities</div><div class="intel-item"><span class="intel-icon">💰</span><span>${b.companyProfile.bondOrFunding}</span></div>`:''}`;
+    ${b.companyProfile.bondOrFunding?`<div class="section-subhead">Bond, Grants & Funding Opportunities</div><div class="intel-item"><span class="intel-icon">💰</span><span>${b.companyProfile.bondOrFunding}</span></div>`:''}
+    ${b.companyProfile.decisionProcess?`<div class="section-subhead">How They Typically Buy</div><div class="intel-item"><span class="intel-icon">🔄</span><span>${b.companyProfile.decisionProcess}</span></div>`:''}`;
 
   const buildingHtml=`
     <div class="building-grid">
@@ -872,6 +944,7 @@ function renderBrief(b,meta){
         </div>
         <div class="meeting-badges">
           <div class="badge badge-opco">📍 ${meta.opco}</div>
+          <div class="badge" style="background:${meta.scope==='corporate'?'rgba(168,100,232,.15)':'rgba(46,204,113,.1)'};color:${meta.scope==='corporate'?'#c87aff':'#2ecc71'};border:1px solid ${meta.scope==='corporate'?'#c87aff44':'#2ecc7144'}">${meta.scope==='corporate'?'🌐 Corporate / Enterprise':'🏢 On-Site Contact'}</div>
           <div class="badge" style="background:${callTypeBadgeColors[meta.callType]?'rgba(116,185,255,.1)':'rgba(201,168,76,.1)'};color:${callTypeBadgeColors[meta.callType]||'#a8c8e8'};border:1px solid ${callTypeBadgeColors[meta.callType]||'#a8c8e8'}44">${callTypeLabels[meta.callType]||'Call'}</div>
           <div class="badge badge-date">📅 ${today}</div>
         </div>
