@@ -1262,7 +1262,7 @@ window.addEventListener('scroll', ()=>{
 // ── OFFICE 365 / POWER AUTOMATE USAGE LOGGING ──
 // Replace POWER_AUTOMATE_URL below with your Power Automate HTTP trigger URL
 // See IT setup instructions for how to create this (10-minute setup)
-const POWER_AUTOMATE_URL = 'https://default14d67554c8624d9abb7b0e290d5236.dc.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d7c3d75b0d5d4647a715b9214bd502d5/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=olEC0NUIimZEonNa_FDMlmluqNACkxOq5Bj67uziWIM';
+const POWER_AUTOMATE_URL = 'https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/logUsage';
 
 async function logUsage(data){
   if(!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL === 'YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL_HERE') return; // not configured yet
