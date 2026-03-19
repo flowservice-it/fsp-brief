@@ -38,6 +38,7 @@
     body::before{display:none;}
     .wrapper{padding:0;max-width:100%;}
     .no-print{display:none!important;}
+    .scroll-indicator{display:none!important;}
     .results{display:block!important;}
     .section-body.collapsed{display:block!important;}
     .section-toggle{display:none;}
@@ -160,8 +161,7 @@
     /* TOC — hide on mobile, too cramped */
     .toc{display:none !important;}
 
-    /* Scroll indicator */
-    .scroll-indicator{display:flex !important;}
+    /* Scroll indicator — shown only via JS after brief renders, never via CSS */
 
     /* Prompt editor */
     .prompt-editor-toggle{padding:12px 14px;}
@@ -554,6 +554,152 @@ const FSP_CUSTOMER_DATA = [
   // { company: "Dillons Grocery Wichita", vertical: "Retail / Food Service", opco: "Weber Refrigeration & Heating" },
 ];
 // ═══════════════════════════════════════════════════════════════════
+// ICP VERTICAL INTELLIGENCE LIBRARY
+// Auto-detected from company name, job title, and address.
+// Each vertical's intelligence silently enriches the AI prompt —
+// salespeople never see this. It shapes the output, not the UI.
+// ═══════════════════════════════════════════════════════════════════
+const ICP_LIBRARY = {
+  healthcare: {
+    keywords: ['hospital','health system','healthcare','clinic','medical center','outpatient','surgical center','asc','ambulatory','patient care','clinical','hca','ascension','commonspirit','baptist health','memorial hospital','regional medical','community health','nursing','long-term care','skilled nursing'],
+    buyer_role: 'Facilities Manager (community hospitals) or Regional/VP Facilities Engineering (large health systems). GPO membership rarely prevents local vendor selection — always confirm directly.',
+    core_metric: 'Patient safety, Joint Commission/CMS compliance, infection control, ASHRAE 170 pressure differentials. HVAC failure is a clinical risk event, not an inconvenience.',
+    roi_frame: 'PM agreements eliminate unplanned downtime in environments where failure is never acceptable. Every reactive repair is also a compliance and patient safety liability. Document everything for Joint Commission surveyors.',
+    pain_points: 'Joint Commission/CMS survey readiness, pressure differential failures in surgical/isolation rooms, Legionella water management compliance, AHU coil cleaning documentation, aging chilled water systems, after-hours emergency response.',
+    objection_intel: 'GPO objection: GPO contracts rarely bind local HVAC selection — ask directly. Incumbent vendor: When did they last walk every AHU and provide Joint Commission-ready documentation? Price: One compliance finding costs more than years of PM.',
+    discovery_qs: '1. Does your facility have a written Legionella water management plan — and is your current vendor maintaining the cooling tower under that program? 2. When was your last Joint Commission survey — any Environment of Care findings related to HVAC or pressure differentials? 3. Do you have documented filter change logs and coil inspection records for the past 24 months? 4. Who gets called at 2 AM when an AHU alarms in your surgical suite — and what is their actual on-site response time?',
+    competitive_intel: 'Nationals (JCI, Trane, Carrier) win on brand with large systems but rotate reps who do not know the building. Local independents cannot produce Joint Commission-ready documentation. Win on: local responsiveness + clinical-grade PM documentation + compliance expertise.',
+    sales_takeaway: 'Healthcare buys PM to reduce risk — not just fix equipment. Frame every conversation around compliance documentation, infection control, and the patient care consequence of failure.'
+  },
+  k12: {
+    keywords: ['school','k-12','k12','elementary','middle school','high school','district','superintendent','principal','board of education','esser','school district','buildings and grounds','iaq','cafeteria','gymnasium','academic building','charter school','private school'],
+    buyer_role: 'Director of Facilities (public districts — competitive bid above $10K-75K threshold). Business Manager or Principal (private/independent schools — no bid requirement). Get pre-qualified before bid season opens.',
+    core_metric: 'Student health and IAQ compliance (ASHRAE 62.1), instructional time protection, and community/parent trust. HVAC failure that closes classrooms becomes a headline.',
+    roi_frame: 'ESSER funds drove HVAC upgrades — those systems now need PM agreements. Bond measures create equipment budgets; PM follows new equipment. Frame as protecting the capital investment taxpayers approved.',
+    pain_points: 'IAQ compliance documentation, aging unit ventilators in pre-1980s buildings, post-ESSER maintenance gaps, parent complaints about air quality, budget cycle timing (finalize by May-June for following academic year).',
+    objection_intel: 'Tight budget: District just invested bond/ESSER funds in new HVAC — a PM agreement protects that investment. Without one, emergency repairs will cost 3-5x more within 5 years. Have a vendor: Are they providing written IAQ documentation you can show the school board or state inspectors?',
+    discovery_qs: `1. Did your district upgrade HVAC with ESSER or bond funds — and do those systems have PM agreements in place? 2. When were your unit ventilators last inspected and cleaned — do you have documentation showing outside air dampers are functioning per ASHRAE 62.1? 3. Have you had any parent complaints or news coverage about air quality in the last two years? 4. When does your current maintenance contract renew, and when does your district finalize next year's budget?`,
+    competitive_intel: 'National vendors win bids on price but provide generic documentation. Local independents are cheaper but cannot produce IAQ compliance records. Win on: compliance documentation + bid process expertise + fast local response.',
+    sales_takeaway: 'K-12 buys PM to protect students, preserve instructional time, and stay ahead of IAQ mandates. Every conversation should frame around compliance and the headline risk of closing a school.'
+  },
+  higher_ed: {
+    keywords: ['university','college','higher education','campus','community college','hbcu','academic','research','residence hall','dormitory','student housing','fraternity','sorority','athletics','student center','library','lecture hall','provost','dean','facilities management','plant operations'],
+    buyer_role: 'VP/AVP of Facilities or Director of Facilities Management (public — competitive bid required above state threshold $25K-150K). CFO/Business Manager alongside Facilities Director (private colleges). HBCUs: relationship-based, community alignment matters strongly.',
+    core_metric: 'Student experience, research continuity (NIH/NSF grant compliance), accreditation readiness, and deferred maintenance reduction. Lab HVAC failure can destroy months of research and threaten grant continuation.',
+    roi_frame: 'IRA, DOE, and FEMA BRIC grants are funding HVAC upgrades — those systems need PM agreements. For research institutions: one thermal event in a lab can destroy federally funded research and trigger grant compliance issues.',
+    pain_points: 'Deferred maintenance backlogs (especially HBCUs), research lab HVAC compliance with federal grants, residence hall comfort during move-in, central plant aging, public procurement timing (budget cycle closes May-July).',
+    objection_intel: 'Bid requirement: Walk the facility and document systems before bid season — every vendor then bids the same scope, which protects the institution. Budget: Has the institution received IRA, DOE, or FEMA BRIC funding for HVAC upgrades? Those systems need PM agreements.',
+    discovery_qs: '1. Has your campus received federal or state grant funding for HVAC upgrades in the last three years — and do those systems have maintenance agreements? 2. Do any research buildings have NIH or NSF grants with facility compliance requirements tied to HVAC performance? 3. When does your facilities budget cycle close for next academic year? 4. What is your biggest deferred maintenance concern heading into next semester?',
+    competitive_intel: 'National OEMs win on research institution brand recognition. Local shops cannot handle central plant complexity. Win on: research-grade documentation + deferred maintenance strategy + procurement process expertise.',
+    sales_takeaway: 'Higher ed buys PM to protect students, preserve research continuity, and satisfy accreditation requirements. Federal grant funding creates PM agreement demand — know the funding landscape before the first call.'
+  },
+  commercial_office: {
+    keywords: ['office','office building','office park','commercial real estate','property manager','property management','reit','asset manager','building manager','chief engineer','building engineer','class a','class b','tenant','multi-tenant','cbre','jll','cushman','colliers','transwestern','noi','cam','nnn','lease'],
+    buyer_role: `Property Manager (day-to-day authority in PM-managed buildings) or Director of Facilities (owner-occupied/corporate). Asset Manager/Regional VP for portfolio-wide agreements. The PM's recommendation carries decisive weight with the owner — make the PM look good.`,
+    core_metric: 'NOI (Net Operating Income) and tenant comfort. At a 6% cap rate: every $1 saved in OpEx = $16.67 of building value. Tenant comfort failures trigger lease concessions and damage NOI directly.',
+    roi_frame: 'PM agreements convert unpredictable OpEx spikes into a fixed, budgetable line item. Every $1 in reactive repair cost prevented = $16.67 of building value preserved at 6% cap rate. PM costs are CAM-recoverable in NNN leases.',
+    pain_points: 'Tenant comfort complaints reaching the asset manager, emergency failure in a fully-occupied building, lease renewal at risk due to chronic HVAC issues, inherited building with no service documentation, energy costs over budget with no explanation.',
+    objection_intel: `Have a vendor: When did someone who actually knows your systems last walk this building and give you a written report you could show the asset manager? Owner decides: The PM's recommendation carries decisive weight — let me put together something you can present with confidence. Tight budget: One emergency after-hours call costs more than two months of PM.`,
+    discovery_qs: '1. Who owns this building — and who is handling property management? 2. Does the owner have other buildings in this market managed by your firm? 3. When does your current HVAC maintenance contract come up for renewal — and how was that vendor selected? 4. What does your asset manager care most about when evaluating building operations? 5. Is HVAC maintenance recoverable through CAM charges on any of these buildings?',
+    competitive_intel: 'Nationals (Trane, JCI, Carrier) win on brand but have rotating reps who do not know the building or tenants. Local independents are cheaper but cannot produce asset manager-grade documentation. Win on: dedicated building technicians + NOI-fluent conversation + PM-grade documentation.',
+    sales_takeaway: 'Office buildings buy PM to protect tenant comfort, preserve NOI, and give property managers documentation to justify every dollar to the asset manager. Speak NOI — it wins portfolios, not just buildings.'
+  },
+  hospitality: {
+    keywords: ['hotel','hospitality','motel','resort','inn','lodging','guest','general manager','director of engineering','chief engineer','revpar','ota','tripadvisor','marriott','hilton','hyatt','ihg','wyndham','extended stay','casino','brand standard','qa audit','front desk','rooms','occupancy','adr','ptac'],
+    buyer_role: 'Director of Engineering or Chief Engineer (technical gatekeeper and strongest ally). General Manager must be comfortable with the relationship. Regional VP of Engineering may need to approve scope. Always ask: "Who else needs to be part of this conversation?" before submitting any proposal.',
+    core_metric: 'RevPAR, guest satisfaction scores, OTA ratings, and brand QA audit compliance. One HVAC-related negative review in peak season can cost 10x the annual PM agreement in lost future bookings.',
+    roi_frame: 'One room pulled from inventory for HVAC repair = direct lost revenue. One negative OTA review = suppressed future ADR. Brand QA audit finding = corporate-level scrutiny. PM eliminates all three risks for a predictable annual cost.',
+    pain_points: 'Guest HVAC complaints posting to TripAdvisor/Google, brand QA audit findings, PTAC unit failures during peak occupancy, cooling tower Legionella compliance, weekend/holiday emergency response gaps, seasonal PM timing.',
+    objection_intel: 'Have a vendor: Has your current vendor ever walked every PTAC unit before a brand QA audit and given you documentation showing compliance? Cost concern: One HVAC-related 1-star review during peak season costs more in future bookings than the entire annual PM agreement.',
+    discovery_qs: '1. When is your next brand QA audit — and does your current HVAC maintenance program give you the documentation to pass? 2. Have you had any HVAC-related guest complaints on TripAdvisor or Google in the last 12 months? 3. What happens when a guest calls about temperature at 11 PM on a Saturday — how long does it take to get a technician on-site? 4. Do you have a written Legionella water management plan covering your cooling towers?',
+    competitive_intel: 'National brands win on brand standard recognition but cannot guarantee sub-4-hour weekend emergency response. Local independents are cheaper but cannot produce brand audit-ready documentation. Win on: 24/7 emergency response + brand compliance documentation + dedicated property technician who knows the systems.',
+    sales_takeaway: 'Hospitality buys PM to protect the guest experience, satisfy brand QA audit requirements, and give the Director of Engineering someone reliable at 2 AM. Frame everything around uptime, reviews, and brand compliance.'
+  },
+  manufacturing: {
+    keywords: ['manufacturing','plant','factory','production','industrial','warehouse','distribution','food processing','pharmaceutical','automotive','aerospace','assembly','fabrication','job shop','plastics','chemical','packaging','logistics','3pl','plant manager','maintenance manager','operations manager','ehs','iso','gmp','osha','oee','production line'],
+    buyer_role: 'Maintenance Manager (technical champion — opens the door) AND Plant Manager (controls the budget — signs the check). Sell to both simultaneously. For multi-site operations: prove performance at one plant, then pursue corporate rollout.',
+    core_metric: 'OEE (Overall Equipment Effectiveness = Availability × Performance × Quality), production uptime, and regulatory compliance (FDA/GMP for food/pharma, ISO for precision manufacturing, OSHA for all). Every HVAC-related downtime hour is a measurable OEE impact.',
+    roi_frame: 'One hour of unplanned HVAC-related production downtime typically costs $10,000-100,000+ depending on the operation. One prevented shutdown pays for years of PM. FDA/GMP and ISO audits require documented HVAC maintenance records — reactive maintenance creates compliance findings.',
+    pain_points: 'Unplanned production downtime from HVAC failure, FDA/GMP audit findings for inadequate environmental control documentation, temperature/humidity excursions causing product quality holds, Maintenance Manager overwhelmed with reactive work, night/weekend emergency response gaps.',
+    objection_intel: `Have a vendor: Is your current vendor providing written maintenance records you can show an FDA auditor or ISO certification body? Price: What does one hour of unplanned downtime cost your facility? That number versus the annual PM cost tells you everything. Self-performing: Your maintenance team's time has a cost — emergency HVAC repairs pull them off production-critical work.`,
+    discovery_qs: '1. Has your facility had any unplanned production downtime in the last 12 months related to HVAC or environmental control? 2. Does your facility operate under FDA, ISO, or GMP standards that require documented HVAC maintenance records — and are those records current? 3. What does one hour of unplanned downtime cost your operation? 4. When your Maintenance Manager gets called about an HVAC issue at 2 AM on a Saturday, who actually shows up and how long does it take?',
+    competitive_intel: 'National OEMs win on equipment-specific contracts but cannot cover the full plant across all brands. Local shops are cheaper but cannot produce FDA/ISO audit-ready documentation. Win on: cross-brand expertise + production uptime narrative + regulatory compliance documentation.',
+    sales_takeaway: 'Manufacturing buys PM to protect production uptime, satisfy regulatory audit requirements, and give the Maintenance Manager a reliable 24/7 partner. Speak OEE and compliance — not square footage and filter schedules.'
+  },
+  mission_critical: {
+    keywords: ['data center','colocation','server room','mission critical','critical facility','uptime','tier iii','tier iv','pue','crac','crah','precision cooling','in-row cooling','telecom','network operations','noc','trading floor','911','psap','emergency operations','broadcast','critical facilities manager','vp of data center','director of data center','it director','infrastructure','cloud','hyperscale','equinix','digital realty'],
+    buyer_role: 'Critical Facilities Manager or VP of Data Center Operations (hyperscale/colo). IT Director + Facilities Manager together (enterprise data centers). Network Operations Manager (telecom/edge). Entry: often through subcontracting with an existing MSP or DCIM provider already on-site.',
+    core_metric: 'Uptime availability (Tier III: 99.982%, Tier IV: 99.995%), PUE (Power Usage Effectiveness target 1.2-1.4), and SLA penalty avoidance. Industry average data center outage cost: $9,000 per minute. HVAC is among the top causes.',
+    roi_frame: 'At $9,000/minute average outage cost, one prevented HVAC failure event pays for years of PM agreements. SLA penalty clauses activate immediately on downtime events. Tier certification and SOC 2 audits mandate documented HVAC maintenance programs — missing records create compliance findings.',
+    pain_points: '24/7 uptime SLA obligations, Tier certification compliance documentation, precision cooling manufacturer credential requirements, Legionella program for cooling towers, PUE optimization, after-hours emergency response with cleared/badged technicians, switching risk perception.',
+    objection_intel: 'Have a vendor: Are your technicians cleared and badged for after-hours access — and do they hold manufacturer credentials for your precision cooling equipment? Cost: Your SLA penalty clause likely exceeds the cost of this PM agreement in the first hour of a preventable outage. Switching risk: Propose a 90-day parallel observation period before assuming full responsibility.',
+    discovery_qs: '1. What is the financial exposure under your SLA if your facility experiences a thermal event during business hours? 2. Does your current HVAC PM provider hold manufacturer certifications for your precision cooling equipment — CRAC units, in-row coolers, or chilled water systems? 3. Are your technicians cleared and badged for critical floor access — and what is their documented response time at 3 AM? 4. Does your facility operate under Tier certification, SOC 2, or any compliance framework that requires documented HVAC maintenance records?',
+    competitive_intel: 'National OEMs hold precision cooling certifications but rotate reps and cannot guarantee sub-1-hour response. Local independents lack Tier certification knowledge and manufacturer credentials. Win on: credentialed/cleared technicians + documented SLA-grade response times + compliance audit readiness.',
+    sales_takeaway: 'Mission critical buys uptime protection and compliance assurance — not maintenance. Every conversation must quantify the cost of downtime and connect PM directly to SLA protection and Tier/SOC 2 certification requirements.'
+  }
+};
+
+// ── VERTICAL DETECTION ──
+// Detects vertical from company name, job title, address, and context.
+// Returns the matching ICP object or null if no match.
+function detectVertical(companyName, jobTitle, address, context) {
+  const haystack = [companyName, jobTitle, address, context].join(' ').toLowerCase();
+  
+  // Score each vertical by keyword matches (more specific keywords score higher)
+  let bestMatch = null;
+  let bestScore = 0;
+  
+  for (const [vertical, icp] of Object.entries(ICP_LIBRARY)) {
+    let score = 0;
+    for (const kw of icp.keywords) {
+      if (haystack.includes(kw.toLowerCase())) {
+        // Longer/more specific keywords score higher
+        score += kw.split(' ').length;
+      }
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = { vertical, icp, score };
+    }
+  }
+  
+  // Minimum confidence threshold — require at least 1 keyword match
+  return bestScore > 0 ? bestMatch : null;
+}
+
+// ── BUILD ICP CONTEXT FOR PROMPT ──
+function buildICPContext(companyName, jobTitle, address, context) {
+  const match = detectVertical(companyName, jobTitle, address, context);
+  if (!match) return '';
+  
+  const { vertical, icp } = match;
+  const verticalLabel = vertical.replace(/_/g, ' ').replace(/\w/g, l => l.toUpperCase());
+  
+  return `
+VERTICAL MARKET INTELLIGENCE — ${verticalLabel.toUpperCase()}
+This account has been identified as: ${verticalLabel}
+Apply this vertical-specific intelligence to enrich every section of the brief.
+
+BUYER ROLE INTELLIGENCE: ${icp.buyer_role}
+
+CORE METRIC THIS BUYER CARES ABOUT: ${icp.core_metric}
+
+ROI FRAMING FOR THIS VERTICAL: ${icp.roi_frame}
+
+KNOWN PAIN POINTS: ${icp.pain_points}
+
+OBJECTION INTELLIGENCE (use exact framing where applicable): ${icp.objection_intel}
+
+ICP-TUNED DISCOVERY QUESTIONS (prioritize these over generic questions): ${icp.discovery_qs}
+
+COMPETITIVE POSITIONING FOR THIS VERTICAL: ${icp.competitive_intel}
+
+VERTICAL SALES TAKEAWAY: ${icp.sales_takeaway}
+
+INSTRUCTION: Use this vertical intelligence to make every section of the brief more precise and accurate for this specific buyer type. Do NOT mention "ICP" or "vertical profile" anywhere in the brief output. Simply apply the intelligence silently — sharper questions, better objection language, more accurate buyer role description, more relevant ROI framing, and more precise competitive positioning. The salesperson should feel the brief is smarter, not that it was built from a template.`;
+}
+
+
 
 // ── OPCO BUTTONS ──
 document.querySelectorAll('.opco-btn').forEach(btn=>{
@@ -662,6 +808,8 @@ PROSPECT:
 {customerContext}
 
 {docContext}
+
+{icpContext}
 
 INSTRUCTIONS:
 1. Use real, specific knowledge about {company} wherever possible — not generic filler
@@ -860,6 +1008,8 @@ async function generateBrief(){
   document.getElementById('userPromptEditor').value=userTemplate;
   const custCtx=buildCustomerContext();
   const docCtx=uploadedDocText?`UPLOADED CUSTOMER FILES:\n${uploadedDocText}`:'No customer files uploaded.';
+  // Auto-detect vertical and build ICP enrichment context
+  const icpCtx=buildICPContext(companyName, jobTitle, address, context);
 
   const scopeLabel = selectedScope==='corporate'
     ? 'CORPORATE / ENTERPRISE CONTACT — This is a regional or national portfolio decision maker managing multiple sites. Tailor ALL strategy for enterprise scale: multi-site opportunity framing, procurement process navigation, executive communication style, national account potential, regional rollout pitch, and ROI at portfolio scale. De-emphasize single-site tactics.'
@@ -877,6 +1027,7 @@ async function generateBrief(){
     .replace(/\{differentiators\}/g,selectedDiff)
     .replace(/\{callType\}/g,selectedCallType).replace(/\{callDesc\}/g,selectedCallDesc)
     .replace(/\{customerContext\}/g,custCtx).replace(/\{docContext\}/g,docCtx)
+    .replace(/\{icpContext\}/g,icpCtx)
     .replace(/\{scope\}/g,scopeLabel).replace(/\{scopeInstruction\}/g,scopeInstr);
 
   try{
