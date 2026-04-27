@@ -120,19 +120,7 @@ Set in Azure Portal → `fsp-brief-proxy` → Settings → Environment Variables
 
 ### STEP 2 — Deploy Updated Azure Function (`anthropicProxy.js`)
 
-The function file lives at `src/functions/anthropicProxy.js` in the Function App GitHub repo.
-
-**Via GitHub (preferred):**
-1. Open the Function App GitHub repository
-2. Navigate to `src/functions/anthropicProxy.js`
-3. Click the pencil (Edit) icon
-4. Replace the entire file contents with the new version
-5. Commit with a descriptive message (e.g. `v3.0 Apollo integration`)
-6. Push to `main` — Azure auto-deploys within 2-3 minutes
-
-**Via Kudu ZIP Deploy:**
-
-> Use this method only if GitHub auto-deploy is not configured.
+The Function App is **not connected to GitHub**. All function deployments are done manually via Kudu ZIP deploy.
 
 Prepare the ZIP with this exact structure (files at root, no wrapper folder):
 ```
@@ -166,12 +154,13 @@ After deploying, verify the function registered:
 
 ### STEP 3 — Deploy Updated HTML Tool (`index.html`)
 
-1. Open the **fsp-brief** GitHub repository
+The Static Web App **is connected to GitHub** (`flowservice-it/fsp-brief`). Deploying is done by uploading the file to GitHub — the Static Web App auto-deploys within 2-3 minutes.
+
+1. Go to the **fsp-brief** GitHub repository
 2. Navigate to `index.html` at the root
-3. Click the pencil (Edit) icon
-4. Replace the entire file contents with the new version
-5. Commit and push to `main`
-6. Azure Static Web App auto-deploys within 2-3 minutes
+3. Click **Add file → Upload files** (or click the existing file and use the pencil to edit)
+4. Upload the new `index.html`
+5. Commit — GitHub triggers auto-deploy automatically
 
 ---
 
