@@ -215,294 +215,332 @@ textarea.form-input{resize:vertical;min-height:80px;}
 .error-block .e-msg{font-size:13px;color:var(--dark-text);}
 
 /* ══════════════════════════════════════════════════════
-   BRIEF OUTPUT — FSP Design System (Matt Horton)
+   BRIEF OUTPUT — FSP Design System
+   Clean, readable browser view matching PDF quality
    ══════════════════════════════════════════════════════ */
+
+/* ── BRIEF WRAPPER ── */
+#results{max-width:860px;margin:0 auto;}
+.brief-output{font-family:Arial,sans-serif;}
 
 /* ── BRIEF MASTHEAD ── */
 .brief-masthead{
   background:var(--navy);color:var(--white);
-  padding:44px 52px;margin:32px 0 0;
-  position:relative;
+  padding:32px 40px;margin:32px 0 0;position:relative;
 }
 .brief-masthead::before{
-  content:'';position:absolute;top:0;left:0;width:6px;height:100%;background:var(--green);
+  content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--green);
 }
 .brief-eyebrow{
-  font-family:Arial,sans-serif;font-size:10px;font-weight:900;
-  color:var(--green);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:10px;
+  font-size:10px;font-weight:900;color:var(--green);
+  letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px;
 }
 .brief-name{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:42px;font-weight:900;color:var(--white);
-  letter-spacing:-0.02em;line-height:1.05;margin-bottom:8px;
+  font-size:28px;font-weight:900;color:var(--white);
+  letter-spacing:-0.02em;line-height:1.1;margin-bottom:5px;
 }
 .brief-title{
-  font-family:Arial,sans-serif;font-size:16px;font-style:italic;
-  color:var(--sky-soft);margin-bottom:4px;
+  font-size:14px;font-style:italic;color:var(--sky-soft);margin-bottom:3px;
 }
 .brief-company{
-  font-family:'Arial Black',Arial,sans-serif;font-size:14px;
-  font-weight:900;color:var(--sky);letter-spacing:-0.01em;margin-bottom:20px;
+  font-family:'Arial Black',Arial,sans-serif;font-size:13px;
+  font-weight:900;color:var(--sky);letter-spacing:-0.01em;margin-bottom:14px;
 }
 .brief-meta-row{
-  display:flex;flex-wrap:wrap;gap:32px;
-  padding-top:18px;border-top:1px solid rgba(135,183,232,0.2);
+  display:flex;flex-wrap:wrap;gap:24px;
+  padding-top:12px;border-top:1px solid rgba(135,183,232,0.2);
 }
-.brief-meta-item{display:flex;flex-direction:column;gap:2px;}
+.brief-meta-item{display:flex;flex-direction:column;gap:1px;}
 .brief-meta-item .m-lbl{
-  font-size:9px;font-weight:900;color:var(--green);
-  letter-spacing:0.18em;text-transform:uppercase;
+  font-size:9px;font-weight:900;color:var(--green);letter-spacing:0.18em;text-transform:uppercase;
 }
 .brief-meta-item .m-val{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:13px;font-weight:900;color:var(--white);letter-spacing:-0.01em;
+  font-size:12px;font-weight:900;color:var(--white);
 }
 .apollo-badge{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(0,192,139,0.15);border:1px solid rgba(0,192,139,0.4);
-  padding:4px 10px;font-size:10px;font-weight:700;color:var(--green);
-  letter-spacing:0.1em;text-transform:uppercase;margin-top:14px;
+  background:rgba(0,192,139,0.12);border:1px solid rgba(0,192,139,0.35);
+  padding:3px 8px;font-size:9px;font-weight:700;color:var(--green);
+  letter-spacing:0.1em;text-transform:uppercase;margin-top:10px;
 }
 
-/* ── BRIEF SECTION NAVIGATION ── */
+/* ── TAB NAV ── */
 .brief-tab-wrap{
   position:sticky;top:0;background:var(--white);z-index:50;
-  border-bottom:2px solid var(--gray);margin:0 0 32px;
-  padding:8px 0 0;overflow:hidden;
+  border-bottom:2px solid var(--gray);margin:0 0 28px;padding:6px 0 0;
 }
 .brief-tab-nav{
-  display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;
+  display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;
   -webkit-overflow-scrolling:touch;white-space:nowrap;padding-bottom:2px;
+  scrollbar-width:thin;scrollbar-color:var(--gray) transparent;
 }
-.brief-tab-nav::-webkit-scrollbar{height:5px;}
+.brief-tab-nav::-webkit-scrollbar{height:4px;}
 .brief-tab-nav::-webkit-scrollbar-thumb{background:var(--gray);}
 .btab-btn{
   flex:0 0 auto;background:transparent;border:none;
-  border-bottom:3px solid transparent;padding:12px 20px 10px;
-  cursor:pointer;white-space:nowrap;font-family:Arial,sans-serif;
-  transition:all 0.15s ease;
+  border-bottom:3px solid transparent;padding:10px 16px 8px;
+  cursor:pointer;font-family:Arial,sans-serif;transition:all 0.15s ease;
 }
 .btab-btn.active{border-bottom-color:var(--green);}
-.btab-btn-inner{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+.btab-btn-inner{display:flex;flex-direction:column;align-items:flex-start;gap:1px;}
 .btab-btn-inner .btab-label{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:13px;font-weight:900;color:var(--navy);letter-spacing:-0.01em;
+  font-size:12px;font-weight:900;color:var(--navy);
 }
 .btab-btn:not(.active) .btab-btn-inner .btab-label{color:var(--slate);}
 .btab-btn-inner .btab-sub{font-size:9px;font-style:italic;color:var(--slate);}
 .brief-panel{display:none;}
 .brief-panel.active{display:block;}
 
-/* ── BRIEF SECTION LABEL ── */
+/* ── SECTION LABEL ── */
 .b-section{
-  display:flex;align-items:center;gap:14px;
-  margin-bottom:10px;margin-top:40px;
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:8px;margin-top:32px;
 }
 .b-section:first-child{margin-top:0;}
 .b-section .b-num{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:26px;font-weight:900;color:var(--green);
-  letter-spacing:-0.02em;min-width:38px;
+  font-size:22px;font-weight:900;color:var(--green);
+  min-width:32px;line-height:1;
 }
 .b-section .b-title{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:17px;font-weight:900;color:var(--navy);letter-spacing:-0.015em;
+  font-size:15px;font-weight:900;color:var(--navy);
 }
 .b-section .b-line{flex:1;height:2px;background:var(--gray);}
 .b-sub{
   font-size:12px;font-style:italic;color:var(--slate);
-  margin-bottom:16px;max-width:820px;
+  margin-bottom:14px;line-height:1.5;
 }
 
-/* ── INTEL CARDS (left-border accent) ── */
+/* ── INTEL CARDS ── */
 .intel-card{
-  background:var(--off-white);border:1px solid var(--gray);
+  background:var(--off-white);border:1px solid #DDE1E6;
   border-left:4px solid var(--green);
-  padding:16px 20px;margin-bottom:10px;
-  font-size:13px;line-height:1.55;color:var(--dark-text);
+  padding:13px 16px;margin-bottom:8px;
+  font-size:13px;line-height:1.6;color:var(--dark-text);
 }
 .intel-card.sky{border-left-color:var(--sky);background:#f0f6fc;}
 .intel-card.alert{border-left-color:#e74c3c;background:#fdf5f5;}
 .intel-card.navy{border-left-color:var(--navy);background:#f0f3f7;}
 .intel-card.orange{border-left-color:#e67e22;background:#fef9f3;}
-.intel-card .ic-icon{
-  font-size:14px;margin-right:8px;
-}
-.intel-card strong{color:var(--navy);font-weight:900;}
+.intel-card strong{color:var(--navy);font-weight:700;}
 
 /* ── PERSON CARD ── */
 .person-card{
-  background:var(--white);border:1px solid var(--gray);
-  border-top:3px solid var(--sky);padding:24px 28px;
-  display:flex;gap:20px;align-items:flex-start;margin-bottom:16px;
+  background:var(--white);border:1px solid #DDE1E6;
+  border-top:3px solid var(--sky);padding:20px 24px;
+  display:flex;gap:18px;align-items:flex-start;margin-bottom:14px;
 }
 .person-avatar{
-  width:52px;height:52px;background:var(--navy);
+  width:48px;height:48px;background:var(--navy);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .person-avatar span{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:16px;font-weight:900;color:var(--sky);letter-spacing:-0.01em;
+  font-size:15px;font-weight:900;color:var(--sky);
 }
 .person-info h3{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:18px;font-weight:900;color:var(--navy);
-  letter-spacing:-0.01em;margin-bottom:3px;
+  font-size:16px;font-weight:900;color:var(--navy);margin-bottom:3px;
 }
-.person-title{
-  font-size:13px;font-style:italic;color:var(--sky);margin-bottom:8px;
-}
-.person-body{font-size:13px;color:var(--dark-text);line-height:1.5;}
+.person-title{font-size:13px;font-style:italic;color:var(--sky);margin-bottom:6px;}
+.person-body{font-size:13px;color:var(--dark-text);line-height:1.55;}
 
-/* ── STATS GRID (building stats / company data) ── */
+/* ── STATS GRID ── */
 .stats-grid{
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:1px;background:var(--gray);border:1px solid var(--gray);margin-bottom:20px;
+  gap:1px;background:var(--gray);border:1px solid var(--gray);margin-bottom:18px;
 }
-.stat-cell{
-  background:var(--white);padding:20px 16px;text-align:center;
-}
+.stat-cell{background:var(--white);padding:16px 12px;text-align:center;}
 .stat-cell .s-val{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:24px;font-weight:900;color:var(--navy);
-  letter-spacing:-0.02em;line-height:1;
+  font-size:20px;font-weight:900;color:var(--navy);line-height:1;
 }
 .stat-cell .s-val.green{color:var(--green);}
 .stat-cell .s-lbl{
-  font-size:9px;font-weight:900;color:var(--slate);
-  letter-spacing:0.18em;text-transform:uppercase;margin-top:6px;
+  font-size:9px;font-weight:700;color:var(--slate);
+  letter-spacing:0.14em;text-transform:uppercase;margin-top:4px;
 }
 
 /* ── DATA TABLE ── */
-.data-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}
+.data-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:13px;}
 .data-table th{
-  background:var(--navy);color:var(--white);padding:10px 14px;
+  background:var(--navy);color:var(--white);padding:9px 12px;
   text-align:left;font-family:'Arial Black',Arial,sans-serif;
-  font-size:10px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;
+  font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
 }
 .data-table td{
-  padding:10px 14px;border-bottom:1px solid #E8EAED;color:var(--dark-text);
+  padding:9px 12px;border-bottom:1px solid #E8EAED;color:var(--dark-text);
+  font-size:13px;line-height:1.45;
 }
-.data-table tr:nth-child(even) td{background:var(--off-white);}
-.data-table td:first-child{font-weight:700;color:var(--navy);}
+.data-table tr:nth-child(even) td{background:#FAFBFC;}
+.data-table td:first-child{font-weight:700;color:var(--navy);white-space:nowrap;}
 .data-table .verified{color:var(--green);font-weight:700;}
 
-/* ── BENEFIT CARDS (6-up grid for intel alerts, pain points) ── */
-.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+/* ── BENEFIT CARDS ── */
+.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
 .benefit-card{
-  background:var(--white);border:1px solid var(--gray);
-  border-top:3px solid var(--green);padding:20px;
+  background:var(--white);border:1px solid #DDE1E6;
+  border-top:3px solid var(--green);padding:16px;
 }
 .benefit-card.sky{border-top-color:var(--sky);}
 .benefit-card.alert{border-top-color:#e74c3c;}
 .benefit-card.navy{border-top-color:var(--navy);}
 .b-num{
-  font-family:'Arial Black',Arial,sans-serif;
-  font-size:10px;font-weight:900;color:var(--green);letter-spacing:0.22em;margin-bottom:6px;
+  font-size:9px;font-weight:900;color:var(--green);
+  letter-spacing:0.2em;text-transform:uppercase;margin-bottom:5px;
 }
 .b-title{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:14px;font-weight:900;color:var(--navy);letter-spacing:-0.01em;
-  line-height:1.2;margin-bottom:6px;
+  font-size:13px;font-weight:900;color:var(--navy);
+  line-height:1.25;margin-bottom:5px;
 }
-.b-body{font-size:12px;line-height:1.5;color:var(--dark-text);}
+.b-body{font-size:12px;line-height:1.55;color:var(--dark-text);}
 .b-tag{
-  display:inline-block;margin-top:8px;
-  font-size:9px;font-weight:900;color:var(--slate);
-  letter-spacing:0.16em;text-transform:uppercase;
+  display:inline-block;margin-top:6px;
+  font-size:9px;font-weight:700;color:var(--slate);
+  letter-spacing:0.14em;text-transform:uppercase;
 }
 
 /* ── QUESTION ITEMS ── */
-.question-list{margin-bottom:20px;}
+.question-list{margin-bottom:16px;}
 .question-item{
-  display:flex;gap:16px;padding:14px 0;
+  display:flex;gap:14px;padding:12px 0;
   border-bottom:1px solid #E8EAED;align-items:flex-start;
 }
 .question-item:last-child{border-bottom:none;}
 .q-num{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:16px;font-weight:900;color:var(--green);
-  min-width:32px;letter-spacing:-0.01em;
+  font-size:15px;font-weight:900;color:var(--green);
+  min-width:28px;line-height:1.4;
 }
 .q-body{flex:1;}
 .q-cat{
   font-size:9px;font-weight:900;color:var(--slate);
-  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:4px;
+  letter-spacing:0.16em;text-transform:uppercase;margin-bottom:3px;
 }
-.q-text{font-size:13px;color:var(--dark-text);line-height:1.5;margin-bottom:4px;}
+.q-text{font-size:13px;color:var(--dark-text);line-height:1.55;margin-bottom:4px;}
 .q-followup{
   font-size:12px;font-style:italic;color:var(--slate);
-  padding-left:12px;border-left:2px solid var(--gray);
+  padding-left:10px;border-left:2px solid var(--gray);line-height:1.5;
 }
 
 /* ── OBJECTION PAIRS ── */
-.objection-pair{margin-bottom:14px;}
+.objection-pair{margin-bottom:12px;}
 .objection-q{
-  background:var(--off-white);border:1px solid var(--gray);
-  border-left:4px solid #e74c3c;padding:13px 16px;
-  font-size:13px;font-weight:700;color:#8B0000;
+  background:#fdf5f5;border:1px solid #f0d0cc;
+  border-left:4px solid #e74c3c;padding:11px 14px;
+  font-size:13px;font-weight:700;color:#8B0000;line-height:1.45;
 }
 .objection-a{
-  background:#f0fdf8;border:1px solid var(--gray);border-top:none;
-  border-left:4px solid var(--green);padding:13px 16px;
-  font-size:13px;color:var(--dark-text);line-height:1.55;
+  background:#f0fdf8;border:1px solid #c8edd8;border-top:none;
+  border-left:4px solid var(--green);padding:11px 14px;
+  font-size:13px;color:var(--dark-text);line-height:1.6;
 }
 
 /* ── COMP TABLE ── */
-.comp-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.comp-table{width:100%;border-collapse:collapse;margin-bottom:18px;}
 .comp-table th{
-  background:var(--navy);color:var(--white);padding:10px 14px;
+  background:var(--navy);color:var(--white);padding:9px 12px;
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:10px;letter-spacing:0.1em;text-transform:uppercase;text-align:left;
+  font-size:10px;letter-spacing:0.08em;text-transform:uppercase;text-align:left;
 }
-.comp-table td{padding:10px 14px;border-bottom:1px solid #E8EAED;font-size:12px;color:var(--dark-text);vertical-align:top;}
-.comp-table tr:nth-child(even) td{background:var(--off-white);}
-.comp-table td:first-child{font-weight:900;font-family:'Arial Black',Arial,sans-serif;font-size:11px;color:var(--navy);}
+.comp-table td{
+  padding:9px 12px;border-bottom:1px solid #E8EAED;
+  font-size:12px;color:var(--dark-text);vertical-align:top;line-height:1.5;
+}
+.comp-table tr:nth-child(even) td{background:#FAFBFC;}
+.comp-table td:first-child{
+  font-family:'Arial Black',Arial,sans-serif;font-size:11px;
+  font-weight:900;color:var(--navy);
+}
 .comp-tag{
-  display:inline-block;padding:2px 8px;margin-right:4px;
+  display:inline-block;padding:2px 6px;margin-right:3px;
   background:var(--off-white);border:1px solid var(--gray);
-  font-size:10px;font-weight:700;color:var(--navy);letter-spacing:0.05em;
+  font-size:10px;font-weight:700;color:var(--navy);
 }
 
 /* ── MH MAP ── */
-.mh-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+.mh-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;}
 .mh-card{
-  background:var(--white);border:1px solid var(--gray);
-  border-top:3px solid var(--navy);padding:18px 20px;
+  background:var(--white);border:1px solid #DDE1E6;
+  border-top:3px solid var(--navy);padding:16px 18px;
 }
 .mh-role{
   font-size:9px;font-weight:900;color:var(--green);
-  letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;
+  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:5px;
 }
 .mh-name{
   font-family:'Arial Black',Arial,sans-serif;
-  font-size:14px;font-weight:900;color:var(--navy);margin-bottom:4px;
+  font-size:13px;font-weight:900;color:var(--navy);margin-bottom:3px;
 }
-.mh-need{font-size:12px;color:var(--slate);line-height:1.4;font-style:italic;}
+.mh-need{font-size:12px;color:var(--slate);line-height:1.45;font-style:italic;}
 
-/* ── WALK AWAY GOALS (2×2 grid) ── */
-.walkaway-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gray);border:1px solid var(--gray);margin-bottom:16px;}
-.wa-cell{background:var(--white);padding:20px 22px;}
+/* ── WALK AWAY GOALS ── */
+.walkaway-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--gray);border:1px solid var(--gray);margin-bottom:14px;
+}
+.wa-cell{background:var(--white);padding:18px 20px;}
 .wa-lbl{
   font-size:9px;font-weight:900;color:var(--green);
-  letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px;
+  letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px;
 }
 .wa-lbl.sky{color:var(--sky);}
-.wa-body{font-size:13px;color:var(--dark-text);line-height:1.5;}
+.wa-body{font-size:13px;color:var(--dark-text);line-height:1.55;}
 
 /* ── CHECKLIST ── */
-.checklist{list-style:none;margin-bottom:20px;}
+.checklist{list-style:none;padding:0;margin-bottom:18px;}
 .checklist li{
-  display:flex;gap:14px;padding:10px 0;
-  border-bottom:1px dashed #E8EAED;font-size:13px;color:var(--dark-text);
+  display:flex;gap:12px;padding:9px 0;
+  border-bottom:1px dashed #E8EAED;font-size:13px;
+  color:var(--dark-text);line-height:1.5;
 }
 .checklist li:last-child{border-bottom:none;}
 .checklist li::before{
   content:attr(data-n);
   font-family:'Arial Black',Arial,sans-serif;
   font-size:11px;font-weight:900;color:var(--green);
-  min-width:24px;
+  min-width:22px;flex-shrink:0;padding-top:1px;
 }
+
+/* ── BRIEF BODY TEXT (paragraphs inside sections) ── */
+.brief-panel p,
+.brief-panel .section-body{
+  font-size:13px;line-height:1.65;color:var(--dark-text);
+  margin-bottom:12px;max-width:780px;
+}
+.brief-panel h4{
+  font-family:'Arial Black',Arial,sans-serif;font-size:13px;
+  font-weight:900;color:var(--navy);margin:16px 0 6px;
+}
+.brief-panel ul{
+  list-style:none;padding:0;margin-bottom:14px;
+}
+.brief-panel ul li{
+  font-size:13px;line-height:1.55;color:var(--dark-text);
+  padding:4px 0 4px 16px;position:relative;border-bottom:1px dashed #E8EAED;
+}
+.brief-panel ul li:last-child{border-bottom:none;}
+.brief-panel ul li::before{
+  content:"▸";position:absolute;left:0;top:5px;
+  color:var(--green);font-size:11px;
+}
+
+/* ── BRIEF FOOTER ── */
+.brief-footer{
+  border-top:2px solid var(--navy);margin-top:36px;padding:14px 0;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px;
+}
+.footer-brand{
+  font-family:'Arial Black',Arial,sans-serif;
+  font-size:12px;font-weight:900;color:var(--navy);
+}
+.footer-meta{font-size:11px;font-style:italic;color:var(--slate);}
 
 /* ── ACTION BAR ── */
 .action-bar{
@@ -636,35 +674,41 @@ textarea.form-input{resize:vertical;min-height:80px;}
       <div class="form-card-label">Operating Company <span class="req">* required</span></div>
       <div class="opco-row" id="opco-buttons">
 <button class="opco-btn" type="button"
+      data-opco="Perfection HVAC" data-state="IN"
+      data-services="commercial HVAC service, preventive maintenance agreements, equipment replacement, controls and building automation"
+      data-markets="healthcare, K-12 education, commercial office, light industrial, property management"
+      data-region="central Indiana and greater Indianapolis"
+      data-differentiators="Indianapolis market depth, healthcare and education facility expertise, strong PM program, 24/7 emergency response">Perfection</button>
+      <button class="opco-btn" type="button"
       data-opco="Alstadt" data-state="IN"
       data-services="commercial HVAC service and replacement, refrigeration, light industrial HVAC"
       data-markets="light industrial, food service, retail, commercial office"
       data-region="northern Indiana"
-      data-differentiators="refrigeration expertise, northern Indiana market depth, industrial HVAC experience">Alstadt (IN)</button>
+      data-differentiators="refrigeration expertise, northern Indiana market depth, industrial HVAC experience">Alstadt</button>
 <button class="opco-btn" type="button"
       data-opco="Cortez" data-state="FL"
       data-services="commercial HVAC service, preventive maintenance, equipment replacement, refrigeration, IAQ solutions"
       data-markets="hospitality, healthcare, K-12 schools, multifamily, commercial, houses of worship"
       data-region="southwest Florida — Bradenton, Sarasota, Manatee and Charlotte counties"
-      data-differentiators="deep SW Florida roots, humidity and coastal corrosion expertise, hospitality and school system experience, fast emergency response">Cortez (FL)</button>
+      data-differentiators="deep SW Florida roots, humidity and coastal corrosion expertise, hospitality and school system experience, fast emergency response">Cortez</button>
 <button class="opco-btn" type="button"
       data-opco="R Brooks Mechanical" data-state="MD"
       data-services="commercial HVAC, plumbing, mechanical service and construction, preventive maintenance"
       data-markets="government, federal, healthcare, education, commercial office"
       data-region="Maryland / DMV — Baltimore to DC corridor"
-      data-differentiators="government contracting experience, mechanical construction capability, DMV market relationships, plumbing + HVAC combined capability">R Brooks (MD)</button>
+      data-differentiators="government contracting experience, mechanical construction capability, DMV market relationships, plumbing + HVAC combined capability">R Brooks Mechanical</button>
 <button class="opco-btn" type="button"
       data-opco="Dynamic Air Solutions" data-state="KY"
       data-services="commercial HVAC service, building automation and controls, energy efficiency solutions, preventive maintenance"
       data-markets="manufacturing, industrial facilities, commercial office, healthcare"
       data-region="Kentucky"
-      data-differentiators="controls and automation expertise, manufacturing sector depth, energy audit capability, industrial HVAC experience">Dynamic Air (KY)</button>
+      data-differentiators="controls and automation expertise, manufacturing sector depth, energy audit capability, industrial HVAC experience">Dynamic Air Solutions</button>
 <button class="opco-btn" type="button"
       data-opco="Weber Refrigeration & Heating" data-state="KS"
       data-services="commercial HVAC, refrigeration, heating, preventive maintenance — 45+ years serving Kansas"
       data-markets="food service, retail, light commercial, agricultural facilities, houses of worship"
       data-region="Kansas — Wichita area and surrounding region"
-      data-differentiators="45+ years of community trust, refrigeration expertise, agricultural and food service depth, local ownership and accountability">Weber (KS)</button>
+      data-differentiators="45+ years of community trust, refrigeration expertise, agricultural and food service depth, local ownership and accountability">Weber Refrigeration & Heating</button>
       </div>
     </div>
 
