@@ -853,7 +853,7 @@ let selectedOpCo='',selectedState='',selectedServices='',selectedMarkets='';
 let selectedRegion='',selectedDiff='',selectedCallType='',selectedCallDesc='';
 let selectedScope='',selectedScopeInstr='';
 const PROXY_URL='https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/anthropicProxy';
-const POWER_AUTOMATE_URL=''; // Replace with your Power Automate HTTP trigger URL
+const POWER_AUTOMATE_URL='https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/logUsage';
 
 // ── DATE ──
 document.getElementById('dateDisplay').querySelector('.m-val').textContent;
@@ -1700,7 +1700,7 @@ async function logUsage(data){
   try{
     await fetch(POWER_AUTOMATE_URL, {
       method:'POST',
-      mode:'no-cors', // required for cross-origin Power Automate calls
+
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(data)
     });

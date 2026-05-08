@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSP Sales Brief — Usage Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0d0f12;
+    --surface:  #141720;
+    --border:   #1e2330;
+    --border2:  #2a3045;
+    --sky:      #4a9eff;
+    --sky-dim:  rgba(74,158,255,.12);
+    --green:    #2ecc71;
+    --green-dim:rgba(46,204,113,.1);
+    --amber:    #f39c12;
+    --amber-dim:rgba(243,156,18,.1);
+    --purple:   #9b59b6;
+    --purple-dim:rgba(155,89,182,.1);
+    --text:     #e8eaf0;
+    --text-dim: #7a8299;
+    --text-mid: #a8b0c8;
+    --red:      #e74c3c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 16px; }
+
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sky);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .divider-v { width: 1px; height: 20px; background: var(--border2); }
+
+  .page-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mid);
+  }
+
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sky-dim);
+    border: 1px solid rgba(74,158,255,.3);
+    color: var(--sky);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .export-btn:hover { background: rgba(74,158,255,.2); }
+  .export-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* ── MAIN ── */
+  .main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .filter-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .filter-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .filter-input {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 12px;
+    outline: none;
+    transition: border-color .2s;
+    min-width: 160px;
+  }
+  .filter-input:focus { border-color: var(--sky); }
+
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+  }
+
+  .btn-primary { background: var(--sky); color: #000; }
+  .btn-primary:hover { background: #6abaff; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+  }
+  .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .table-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: rgba(255,255,255,.02);
+    padding: 11px 16px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th:hover { color: var(--text-mid); }
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--sky); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--sky); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.02); }
+
+  td {
+    padding: 11px 16px;
+    color: var(--text);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  td.dim { color: var(--text-dim); font-size: 12px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .badge-discovery { background: var(--sky-dim);    color: var(--sky);    border: 1px solid rgba(74,158,255,.25); }
+  .badge-pm        { background: var(--green-dim);   color: var(--green);  border: 1px solid rgba(46,204,113,.25); }
+  .badge-project   { background: var(--amber-dim);   color: var(--amber);  border: 1px solid rgba(243,156,18,.25); }
+  .badge-follow    { background: var(--purple-dim);  color: var(--purple); border: 1px solid rgba(155,89,182,.25); }
+  .badge-other     { background: rgba(255,255,255,.05); color: var(--text-dim); border: 1px solid var(--border2); }
+
+  .scope-local { color: var(--green); }
+  .scope-corporate { color: var(--purple); }
+
+  .apollo-yes { color: var(--sky); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .apollo-no  { color: var(--border2); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+
+  /* ── EMPTY / LOADING ── */
+  .state-row td {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--sky);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── ERROR BANNER ── */
+  .error-banner {
+    background: rgba(231,76,60,.1);
+    border: 1px solid rgba(231,76,60,.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--red);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .header { padding: 12px 16px; }
+    .filters { flex-direction: column; }
+    .filter-input { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">FSP</div>
+    <div class="divider-v"></div>
+    <div class="page-title">Sales Brief — Usage Dashboard</div>
+  </div>
+  <button class="export-btn" id="exportBtn" onclick="exportXlsx()" disabled>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+    Export to Excel
+  </button>
+</div>
+
+<div class="main">
+
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card"><div class="stat-label">Total Briefs</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">all time</div></div>
+    <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="statMonth">—</div><div class="stat-sub" id="statMonthLabel">—</div></div>
+    <div class="stat-card"><div class="stat-label">Unique Reps</div><div class="stat-value" id="statReps">—</div><div class="stat-sub">active users</div></div>
+    <div class="stat-card"><div class="stat-label">OpCos</div><div class="stat-value" id="statOpcos">—</div><div class="stat-sub">operating companies</div></div>
+    <div class="stat-card"><div class="stat-label">Apollo Enriched</div><div class="stat-value" id="statApollo">—</div><div class="stat-sub">of timestamped briefs</div></div>
+  </div>
+
+  <div class="error-banner" id="errorBanner"></div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <div class="filter-label">Salesperson</div>
+      <input class="filter-input" type="text" id="fSalesperson" placeholder="Any">
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">OpCo</div>
+      <input class="filter-input" type="text" id="fOpco" placeholder="Any">
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">From</div>
+      <input class="filter-input" type="date" id="fFrom">
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">To</div>
+      <input class="filter-input" type="date" id="fTo">
+    </div>
+    <button class="filter-btn btn-primary" onclick="loadLogs()">Apply</button>
+    <button class="filter-btn btn-ghost" onclick="clearFilters()">Clear</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header-row">
+      <div class="table-count" id="tableCount">Loading...</div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('timestamp')">Timestamp</th>
+            <th onclick="sortBy('salesperson')">Salesperson</th>
+            <th onclick="sortBy('opco')">OpCo</th>
+            <th onclick="sortBy('call_type')">Call Type</th>
+            <th onclick="sortBy('company')">Company</th>
+            <th onclick="sortBy('contact')">Contact</th>
+            <th onclick="sortBy('address')">Location</th>
+            <th onclick="sortBy('scope')">Scope</th>
+            <th onclick="sortBy('apollo_enriched')">Apollo</th>
+            <th onclick="sortBy('tokens_used')">Tokens</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr class="state-row"><td colspan="10"><div class="spinner"></div><br>Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+const API_BASE = 'https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api';
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let allRows = [];
+let sortCol = 'timestamp';
+let sortDir = 'desc';
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Default date range: last 90 days
+  const to = new Date();
+  const from = new Date(); from.setDate(from.getDate() - 90);
+  document.getElementById('fTo').value   = to.toISOString().split('T')[0];
+  document.getElementById('fFrom').value = from.toISOString().split('T')[0];
+  loadLogs();
+});
+
+// ── LOAD LOGS ──────────────────────────────────────────────────────────────
+async function loadLogs() {
+  showError('');
+  setTableLoading();
+
+  const params = new URLSearchParams();
+  const salesperson = document.getElementById('fSalesperson').value.trim();
+  const opco        = document.getElementById('fOpco').value.trim();
+  const from        = document.getElementById('fFrom').value;
+  const to          = document.getElementById('fTo').value;
+
+  if (salesperson) params.set('salesperson', salesperson);
+  if (opco)        params.set('opco', opco);
+  if (from)        params.set('from', from);
+  if (to)          params.set('to', to);
+  params.set('limit', '1000');
+
+  try {
+    const resp = await fetch(`${API_BASE}/getUsageLogs?${params}`);
+    if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+    const data = await resp.json();
+    allRows = data.rows || [];
+    renderTable();
+    updateStats();
+    document.getElementById('exportBtn').disabled = allRows.length === 0;
+  } catch (err) {
+    showError(`Failed to load data: ${err.message}`);
+    setTableEmpty('Could not connect to server.');
+  }
+}
+
+// ── RENDER TABLE ───────────────────────────────────────────────────────────
+function renderTable() {
+  const sorted = [...allRows].sort((a, b) => {
+    let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
+    if (typeof va === 'boolean') { va = va ? 1 : 0; vb = vb ? 1 : 0; }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const tbody = document.getElementById('tableBody');
+  const count = document.getElementById('tableCount');
+
+  if (sorted.length === 0) {
+    setTableEmpty('No records found for the selected filters.');
+    count.textContent = '0 results';
+    return;
+  }
+
+  count.textContent = `${sorted.length.toLocaleString()} result${sorted.length !== 1 ? 's' : ''}`;
+
+  tbody.innerHTML = sorted.map(r => `
+    <tr>
+      <td class="dim" style="font-family:'IBM Plex Mono',monospace">${r.timestamp || '—'}</td>
+      <td>${esc(r.salesperson) || '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="dim">${esc(r.opco) || '—'}</td>
+      <td>${callTypeBadge(r.call_type)}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${esc(r.company) || '—'}</td>
+      <td class="dim">${esc(r.contact) || '—'}</td>
+      <td class="dim" style="max-width:160px;overflow:hidden;text-overflow:ellipsis">${esc(r.address) || '—'}</td>
+      <td>${scopeLabel(r.scope)}</td>
+      <td>${r.apollo_enriched ? '<span class="apollo-yes">✓</span>' : '<span class="apollo-no">—</span>'}</td>
+      <td class="dim" style="font-family:'IBM Plex Mono',monospace;text-align:right">${r.tokens_used != null ? r.tokens_used.toLocaleString() : '—'}</td>
+    </tr>
+  `).join('');
+
+  // Update sort indicators
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+  });
+  const cols = ['timestamp','salesperson','opco','call_type','company','contact','address','scope','apollo_enriched','tokens_used'];
+  const idx  = cols.indexOf(sortCol);
+  if (idx >= 0) {
+    document.querySelectorAll('thead th')[idx].classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+  }
+}
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+function updateStats() {
+  const now   = new Date();
+  const month = now.toLocaleString('en-US', { month: 'long' });
+  const mm    = String(now.getMonth() + 1).padStart(2, '0');
+  const yyyy  = now.getFullYear();
+
+  const thisMonth = allRows.filter(r => r.timestamp && r.timestamp.startsWith(`${mm}/`));
+  const reps      = new Set(allRows.map(r => r.salesperson).filter(Boolean));
+  const opcos     = new Set(allRows.map(r => r.opco).filter(Boolean));
+  const withTs    = allRows.filter(r => r.timestamp && r.timestamp !== 'pre-timestamp');
+  const apolloCount = withTs.filter(r => r.apollo_enriched).length;
+  const apolloPct = withTs.length ? Math.round(apolloCount / withTs.length * 100) : 0;
+
+  document.getElementById('statTotal').textContent  = allRows.length.toLocaleString();
+  document.getElementById('statMonth').textContent  = thisMonth.length.toLocaleString();
+  document.getElementById('statMonthLabel').textContent = `${month} ${yyyy}`;
+  document.getElementById('statReps').textContent   = reps.size.toLocaleString();
+  document.getElementById('statOpcos').textContent  = opcos.size.toLocaleString();
+  document.getElementById('statApollo').textContent = `${apolloPct}%`;
+}
+
+// ── SORT ───────────────────────────────────────────────────────────────────
+function sortBy(col) {
+  if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortCol = col; sortDir = 'desc'; }
+  renderTable();
+}
+
+// ── CLEAR FILTERS ──────────────────────────────────────────────────────────
+function clearFilters() {
+  ['fSalesperson','fOpco','fFrom','fTo'].forEach(id => document.getElementById(id).value = '');
+  loadLogs();
+}
+
+// ── EXPORT XLSX ────────────────────────────────────────────────────────────
+function exportXlsx() {
+  if (!allRows.length) return;
+
+  const headers = ['Timestamp','Salesperson','OpCo','Call Type','Company','Contact','Location','Scope','Apollo Enriched','Tokens Used'];
+  const rows = allRows.map(r => [
+    r.timestamp   || '',
+    r.salesperson || '',
+    r.opco        || '',
+    r.call_type   || '',
+    r.company     || '',
+    r.contact     || '',
+    r.address     || '',
+    r.scope       || '',
+    r.apollo_enriched ? 'Yes' : 'No',
+    r.tokens_used != null ? r.tokens_used : ''
+  ]);
+
+  // Build CSV and convert to Excel-compatible UTF-8 BOM CSV
+  const csv = [headers, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href     = url;
+  a.download = `FSP_Brief_Usage_${date}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function callTypeBadge(type) {
+  const t = (type || '').toLowerCase();
+  const cls = t === 'discovery' ? 'badge-discovery'
+            : t === 'pm'        ? 'badge-pm'
+            : t === 'project'   ? 'badge-project'
+            : t === 'follow'    ? 'badge-follow'
+            : 'badge-other';
+  return `<span class="badge ${cls}">${esc(type) || '—'}</span>`;
+}
+
+function scopeLabel(scope) {
+  if (!scope) return '<span style="color:var(--text-dim)">—</span>';
+  const cls = scope === 'corporate' ? 'scope-corporate' : 'scope-local';
+  const label = scope === 'corporate' ? '🌐 Corporate' : '🏢 On-Site';
+  return `<span class="${cls}" style="font-size:12px">${label}</span>`;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setTableLoading() {
+  document.getElementById('tableBody').innerHTML =
+    '<tr class="state-row"><td colspan="10"><div class="spinner"></div><br>Loading...</td></tr>';
+  document.getElementById('tableCount').textContent = '...';
+}
+
+function setTableEmpty(msg) {
+  document.getElementById('tableBody').innerHTML =
+    `<tr class="state-row"><td colspan="10">${msg}</td></tr>`;
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBanner');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+</script>
+</body>
+</html>
