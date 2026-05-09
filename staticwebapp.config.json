@@ -13,6 +13,10 @@
   },
   "routes": [
     {
+      "route": "/api/getRoles",
+      "allowedRoles": ["anonymous"]
+    },
+    {
       "route": "/admin.html",
       "allowedRoles": ["briefAdmin"]
     }
