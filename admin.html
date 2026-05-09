@@ -365,7 +365,7 @@
       <table>
         <thead>
           <tr>
-            <th onclick="sortBy('timestamp')">Timestamp</th>
+            <th onclick="sortBy('created_at')">Timestamp</th>
             <th onclick="sortBy('salesperson')">Salesperson</th>
             <th onclick="sortBy('opco')">OpCo</th>
             <th onclick="sortBy('call_type')">Call Type</th>
@@ -392,7 +392,7 @@ const API_BASE = '/api';
 
 // ── STATE ──────────────────────────────────────────────────────────────────
 let allRows = [];
-let sortCol = 'timestamp';
+let sortCol = 'created_at';
 let sortDir = 'desc';
 
 // ── INIT ───────────────────────────────────────────────────────────────────
@@ -454,7 +454,7 @@ function renderTable() {
 
   tbody.innerHTML = sorted.map(r => `
     <tr>
-      <td class="dim" style="font-family:'IBM Plex Mono',monospace">${r.timestamp || '—'}</td>
+      <td class="dim" style="font-family:'IBM Plex Mono',monospace">${r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : '—'}</td>
       <td>${esc(r.salesperson) || '<span style="color:var(--text-dim)">—</span>'}</td>
       <td class="dim">${esc(r.opco) || '—'}</td>
       <td>${callTypeBadge(r.call_type)}</td>
@@ -471,7 +471,7 @@ function renderTable() {
   document.querySelectorAll('thead th').forEach(th => {
     th.classList.remove('sort-asc', 'sort-desc');
   });
-  const cols = ['timestamp','salesperson','opco','call_type','company','contact','address','scope','apollo_enriched','tokens_used'];
+  const cols = ['created_at','salesperson','opco','call_type','company','contact','address','scope','apollo_enriched','tokens_used'];
   const idx  = cols.indexOf(sortCol);
   if (idx >= 0) {
     document.querySelectorAll('thead th')[idx].classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -485,12 +485,15 @@ function updateStats() {
   const mm    = String(now.getMonth() + 1).padStart(2, '0');
   const yyyy  = now.getFullYear();
 
-  const thisMonth = allRows.filter(r => r.timestamp && r.timestamp.startsWith(`${mm}/`));
+  const thisMonth = allRows.filter(r => {
+    if (!r.created_at) return false;
+    const d = new Date(r.created_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
   const reps      = new Set(allRows.map(r => r.salesperson).filter(Boolean));
   const opcos     = new Set(allRows.map(r => r.opco).filter(Boolean));
-  const withTs    = allRows.filter(r => r.timestamp && r.timestamp !== 'pre-timestamp');
-  const apolloCount = withTs.filter(r => r.apollo_enriched).length;
-  const apolloPct = withTs.length ? Math.round(apolloCount / withTs.length * 100) : 0;
+  const apolloCount = allRows.filter(r => r.apollo_enriched).length;
+  const apolloPct = allRows.length ? Math.round(apolloCount / allRows.length * 100) : 0;
 
   document.getElementById('statTotal').textContent  = allRows.length.toLocaleString();
   document.getElementById('statMonth').textContent  = thisMonth.length.toLocaleString();
@@ -519,7 +522,7 @@ function exportXlsx() {
 
   const headers = ['Timestamp','Salesperson','OpCo','Call Type','Company','Contact','Location','Scope','Apollo Enriched','Tokens Used'];
   const rows = allRows.map(r => [
-    r.timestamp   || '',
+    r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : '',
     r.salesperson || '',
     r.opco        || '',
     r.call_type   || '',
