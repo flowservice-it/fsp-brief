@@ -397,11 +397,6 @@ let sortDir = 'desc';
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Default date range: last 90 days
-  const to = new Date();
-  const from = new Date(); from.setDate(from.getDate() - 90);
-  document.getElementById('fTo').value   = to.toISOString().split('T')[0];
-  document.getElementById('fFrom').value = from.toISOString().split('T')[0];
   loadLogs();
 });
 
