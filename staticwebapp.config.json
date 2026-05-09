@@ -1,0 +1,26 @@
+{
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/14d67554-c862-4d9a-bb7b-0e290d5236dc/v2.0",
+          "clientIdSettingName": "AAD_CLIENT_ID",
+          "clientSecretSettingName": "AAD_CLIENT_SECRET"
+        }
+      }
+    },
+    "rolesSource": "https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/getRoles"
+  },
+  "routes": [
+    {
+      "route": "/admin.html",
+      "allowedRoles": ["briefAdmin"]
+    }
+  ],
+  "responseOverrides": {
+    "401": {
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=/admin.html",
+      "statusCode": 302
+    }
+  }
+}
