@@ -164,6 +164,14 @@
   }
   .filter-input:focus { border-color: var(--sky); }
 
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.5);
+    cursor: pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
   .filter-btn {
     padding: 8px 20px;
     border-radius: 6px;
