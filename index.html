@@ -1331,14 +1331,15 @@ async function generateBrief(){
     renderBrief(brief,{contactName,jobTitle,companyName,address,opco:selectedOpCo,state:selectedState,callType:selectedCallType,scope:selectedScope});
     // Log usage to Google Sheet (non-blocking, fails silently)
     logUsage({
-      timestamp: new Date().toISOString(),
       salesperson: salespersonName,
       opco: selectedOpCo,
       callType: selectedCallType,
       company: companyName,
       contact: contactName,
       address: address,
-      scope: selectedScope
+      scope: selectedScope,
+      apolloEnriched: !!(contactName && companyName),
+      tokensUsed: data.usage ? (data.usage.input_tokens + data.usage.output_tokens) : null
     });
   } catch(err){
     clearInterval(msgInt);
@@ -1691,23 +1692,6 @@ window.addEventListener('scroll', ()=>{
 }, {passive:true});
 
 
-// ── OFFICE 365 / POWER AUTOMATE USAGE LOGGING ──
-// Replace POWER_AUTOMATE_URL below with your Power Automate HTTP trigger URL
-// See IT setup instructions for how to create this (10-minute setup)
-
-async function logUsage(data){
-  if(!POWER_AUTOMATE_URL || POWER_AUTOMATE_URL === 'YOUR_POWER_AUTOMATE_HTTP_TRIGGER_URL_HERE') return; // not configured yet
-  try{
-    await fetch(POWER_AUTOMATE_URL, {
-      method:'POST',
-
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
-  } catch(e){
-    console.warn('Usage logging failed (non-critical):', e.message);
-  }
-}
 
 function resetForm(){
   document.getElementById('results').classList.remove('visible');
