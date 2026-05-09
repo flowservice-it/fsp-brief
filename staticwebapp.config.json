@@ -9,7 +9,7 @@
         }
       }
     },
-    "rolesSource": "https://fsp-brief-proxy-czczcdejf9d9dvdv.centralus-01.azurewebsites.net/api/getRoles"
+    "rolesSource": "/api/getRoles"
   },
   "routes": [
     {
