@@ -454,7 +454,7 @@ function renderTable() {
 
   tbody.innerHTML = sorted.map(r => `
     <tr>
-      <td class="dim" style="font-family:'IBM Plex Mono',monospace">${r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : '—'}</td>
+      <td class="dim" style="font-family:'IBM Plex Mono',monospace">${r.timestamp || (r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : '—')}</td>
       <td>${esc(r.salesperson) || '<span style="color:var(--text-dim)">—</span>'}</td>
       <td class="dim">${esc(r.opco) || '—'}</td>
       <td>${callTypeBadge(r.call_type)}</td>
@@ -522,7 +522,7 @@ function exportXlsx() {
 
   const headers = ['Timestamp','Salesperson','OpCo','Call Type','Company','Contact','Location','Scope','Apollo Enriched','Tokens Used'];
   const rows = allRows.map(r => [
-    r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : '',
+    r.timestamp || (r.created_at ? new Date(r.created_at).toLocaleString('en-US', { timeZone: 'America/New_York' }) : ''),
     r.salesperson || '',
     r.opco        || '',
     r.call_type   || '',
